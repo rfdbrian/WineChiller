@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html >
+  <head>
+  </head>
+  <body>
+  <div id = "auto"></div>
+       
+      <script type="text/javascript" src ="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script type = "text/javascript">
+      $(document).ready(function(){
+        $('#auto').load('f1.php');
+        refresh();
+      });
+      function refresh()
+      {
+        setTimeout(function(){
+            $('#auto').fadeOut('slow').load('f1.php').fadeIn('slow');
+            refresh();
+        },200);
+      }
+
+    </script>  
+    <h1>CURRENT STATE</h1>
+    </body>
+    </html>

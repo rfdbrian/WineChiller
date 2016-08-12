@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+   
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Bootstrap 3 Tutorial from BootstrapBay.com">
+    <meta name="author" content="BootstrapBay.com">
+    <title>BootstrapBay Tutorial</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+  </head>
+
+   <!-- <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+
+          <div class="dropdown">
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            +
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </div>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href="#">Edit</a></li>       
+            
+          </ul>
+        </div><!--/.nav-collapse 
+      </div>
+    </div>
+    -->
+  <body>
+    <!-- Fixed navbar -->
+    <div id = "auto"></div>
+       
+      <script type="text/javascript" src ="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script type = "text/javascript">
+      $(document).ready(function(){
+         
+       
+        $('#auto').load('f1.php');
+
+
+        refresh();
+        
+      });
+      function refresh()
+      {
+        setTimeout(function(){
+          $('#auto').load('f1.php').fadeIn('slow');
+          var a = $('#auto').text();
+         if(a[0] =="1")
+            {
+            $("#one").attr('src', 'burgundybottle.jpg');
+             }
+          
+          if(a[1] =="1")
+            {
+            $("#two").attr('src', 'burgundybottle.jpg');
+             }
+          if(a[2] =="1")
+            {
+            $("#three").attr('src', 'burgundybottle.jpg');
+             }
+          if(a[3] =="1")
+            {
+            $("#one").attr('src', 'burgundybottle.jpg');
+             }
+          
+          if(a[4] =="1")
+            {
+            $("#one").attr('src', 'burgundybottle.jpg');
+             }
+          if(a[5] =="1")
+            {
+            $("#one").attr('src', 'burgundybottle.jpg');
+             }
+           
+            refresh();
+         
+              
+        },200);
+          
+       
+      }
+
+    </script> 
+    <script>
+        function showImg() {
+            $("#one").attr('src', 'burgundybottle.jpg');
+        }
+    </script>
+
+
+    <img id="map_img" src="map.jpg" style="display: none;" width="400" height="400"/>
+    <input type="submit" id="Map" value="Map" onclick="showImg()"/>
+
+
+<!-- Carousel -->  
+<a href = "storage.html">
+    <div class="square bg2 img2">
+      <img id = "one" src="glass2.png">
+        <div class="content">
+            <div class="table">
+                <div class="table-cell">
+                    
+                </div>
+            </div>
+        </div>
+        </img>
+    </div>
+</a>
+
+<a href = "storage.html">
+  <div class="square bg img3">
+      <div class="content">
+          <div class="table">
+              <div class="table-cell">
+                  
+              </div>
+          </div>
+      </div>
+  </div>
+</a>
+<a href = "storage.html">
+  <div class="square bg img2">
+      <div class="content">
+          <div class="table">
+              <div class="table-cell">
+                  
+              </div>
+          </div>
+      </div>
+  </div>
+</a>
+</div>
+<a href = "storage.html">
+  <div class="square bg img1">
+      <div class="content">
+          <div class="table">
+              <div class="table-cell">
+                  
+              </div>
+          </div>
+      </div>
+  </div>
+</a>
+
+<!-- 2nd row verticaly centered images in square columns -->
+<a href = "storage.html">
+  <div class="square bg img2">
+      <div class="content">
+          <div class="table">
+              <div class="table-cell">
+                  
+              </div>
+          </div>
+      </div>
+  </div>
+</a>
+
+<a href = "storage.html">
+  <div class="square bg img2 col-sm-4">
+      <div class="content">
+          <div class="table">
+              <div class="table-cell">
+                  
+              </div>
+          </div>
+      </div>
+  </div>
+</a>
+
+
+<!-- 
+<div class="navbar navbar-fixed-bottom" role="navigation">
+      <div class="container">
+        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+        <div class="row">
+              <div class="col-sm-3">
+                <a href="#" class="thumbnail">
+                  <img src="imgs/glass2.png" alt="Slate Bootstrap Admin Theme">
+                </a>
+              </div>
+              <div class="col-sm-3">
+                <a href="#" class="thumbnail">
+                  <img src="imgs/fridge2.png" alt="Appi Landing Page Template">
+                </a>
+                
+              </div>
+              <div class="col-sm-3">
+                <a href="list.html" class="thumbnail">
+                  <img src="imgs/clipboard2.png" alt="Jiggy Portfolio Theme">
+                </a>
+              </div>
+              <div class="col-sm-3">
+                <a href="#" class="thumbnail">
+                  <img src="imgs/camera2.png" alt="Jiggy Portfolio Theme">
+                </a>
+              </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+END OF LAYOUT, following juts for the demo -->
+    
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+   <div class="modal fade" id="contact" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form class="form-horizontal" role="form">
+            <div class="modal-header">
+              <h4>Contact<h4>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="contact-name" class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="contact-name" placeholder="First & Last Name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="contact-email" class="col-sm-2 control-label">Email</label>
+                <div class="col-sm-10">
+                  <input type="email" class="form-control" id="contact-email" placeholder="example@domain.com">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="contact-message" class="col-sm-2 control-label">Message</label>
+                <div class="col-sm-10">
+                  <textarea class="form-control" rows="4"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a class="btn btn-default" data-dismiss="modal">Close</a>
+              <button type="submit" class="btn btn-primary">Send</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
