@@ -12,8 +12,8 @@ How To Run:
 
 
 Things still do to:
-1.Show certain wine images upon button selections of 1 of the 6 wines, for example. If Wine 3 is chosen and Pin 2 (010000) is pushed down show Wine 3 image in the second spot.
-2.Set up on Raspberri Pi to Display.
+1. Show certain wine images upon button selections of 1 of the 6 wines, for example. If Wine 3 is chosen and Pin 2 (010000) is pushed down show Wine 3 image in the second spot.
+2. Set up on Raspberri Pi to Display.
 
 
 
