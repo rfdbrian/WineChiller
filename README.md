@@ -8,7 +8,6 @@ How To Run:
 3. Open a Terminal Box, run "python usb.py" Should be printing the current state of the ardunio pins into the terminal.
 4. In a seperate Terminal Run python pyserver.py
 5. In a browser open http://localhost:8000/tester.html this has the image side, with a JS function which pulls from f1.txt and displays accordingly. 
-6. 
 
 
 Things still do to:
