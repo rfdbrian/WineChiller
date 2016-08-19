@@ -44,6 +44,7 @@ void ui(){
   SimbleeForMobile.drawText(100,40,"TABLE",BLACK,40);
   
   //draw table outline
+	//	Each 'drawRect' is a line of 1 pixel width.
   SimbleeForMobile.drawRect(1,100,1,100,BLACK);
   SimbleeForMobile.drawRect(1+i,100,1,100,BLACK);
   SimbleeForMobile.drawRect(1+(2*i),100,1,100,BLACK);
@@ -52,10 +53,10 @@ void ui(){
   SimbleeForMobile.drawRect(1+(5*i),100,1,100,BLACK);
   SimbleeForMobile.drawRect(319,100,1,100,BLACK);
   
+	
   SimbleeForMobile.drawRect(1,100,319,1,BLACK);
   SimbleeForMobile.drawRect(1,152,319,1,BLACK);
   SimbleeForMobile.drawRect(1,204,319,1,BLACK);
-
 
   //labels
   SimbleeForMobile.drawText(65,110,"[0]",BLACK,24);
@@ -65,7 +66,6 @@ void ui(){
   SimbleeForMobile.drawText(65+(4*i),110,"[4]",BLACK,24);
 
   SimbleeForMobile.drawText(3,162,"Value",BLACK,20);
-  
   
   //values
   val[0] = SimbleeForMobile.drawText(58,166,value,BLACK);
