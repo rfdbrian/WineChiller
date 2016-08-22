@@ -1,7 +1,11 @@
 #include "Record.h"
 
+
+Record::Record() : 
+    wineName(""), wineLocation(0), buttonID(0), labelID(0) { }
+    
 Record::Record(String inputWineName) : 
-	wineName(inputWineName) { }
+	wineName(inputWineName), wineLocation(0), buttonID(0), labelID(0) { }
 
 Record::~Record() { } 
 

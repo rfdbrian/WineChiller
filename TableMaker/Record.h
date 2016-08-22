@@ -13,6 +13,7 @@ class Record {
 		int labelID;
 
 	public:
+        Record();
 		Record(String inputWineName);
 		~Record();
 

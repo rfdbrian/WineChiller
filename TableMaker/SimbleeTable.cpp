@@ -1,122 +1,148 @@
 #include "SimbleeTable.h"
 
 SimbleeTable::SimbleeTable() :
-	rows(NULL), button_ids(NULL), label_ids(NULL) {
-		drawTable();
+    rows(NULL), button_ids(NULL), label_ids(NULL), slider_id(0) {
+        draw_table(0);
+        update_table();
 };
 
-/** 
- * A table is a collection of records. Columns added by need. 
- */ 
-void SimbleeTable::drawTable() {
-	//	Table Name 
-	SimbleeForMobile.drawRect(100, 40, "STORED WINES", BLACK, 40);
-
-	if ((SimbleeForMobile.screenHeight - (inputRows * CELL_HEIGHT) < 0) || 
-			(SimbleeForMobile.screenWidth - (inputCols * CELL_ROW) < 0))		 {
-		throw std::out_of_range("Number of rows exceed screenHeight");
-	}
-	//	Utilize for-loop to generate X number of cells line by line,
-	//		given the following condition: 
-	//			SimbleeForMobile.screenHeight - (cell-y-pos + cell-height) > 0
-	//		Note: For this library, we'll assume a resolution of 480x360
-	
-	//	Line weigth of table outline is specified by min(height, width) of a given
-	//		drawn rectangle. 
-	
-	//	Drawing column lines.
-	int cellPositionOffset = 0;
-	int widthOfTable = 1;
-	for (int colRunner = 0; colRunner <= columns; colRunner++) {
-		cellPositionOffset = colRunner * CELL_WIDTH;
-		SimbleeForMobile.drawRect(1 + cellPositionOffset, 100, 1, CELL_HEIGHT, BLACK); 
-		widthOfTable += 1 + cellPositionOffset;
-	}
-
-	//	Drawing row lines.
-	cellPositionOffset = 0;
-	for (int rowRunner = 0; rowRunner <= rows; rowRunner++) { 
-		cellPositionOffset = rowRunner * CELL_HEIGHT;
-		SimbleeForMobile.drawRect(1, 100 + cellPositionOffset, widthOfTable, 1, BLACK);
-	}
-}
-
-void SimbleeTable::drawTableTextContainers() {
-	//	Simblee has a "Borderless" button called TEXT_TYPE button. 
-	//		A label is similar to the previous in most respects, except default
-	//		text centering.  
-	
-	int rowCellPositionOffset = 0;
-	int colCellPositionOffset = 0;
-	//	Drawing row lines.
-	for (int rowRunner = 0; rowRunner < rows; rowRunner++) {
-		for (int colRunner = 0; colRunner < columns; colRunner++) {
-			rowCellPositionOffset = rowRunner * CELL_HEIGHT;
-			colCellPositionOffset = colRunner * CELL_WIDTH;
-			SimbleeForMobile.drawButton(1 + rowCellPositionOffset, 100 + colCellPositionOffset, CELL_WIDTH, BLACK, TEXT_TYPE);
-		}
-	}
-}	
+SimbleeTable::SimbleeTable(uint16_t startHeight) :
+	rows(NULL), button_ids(NULL), label_ids(NULL), slider_id(0) {
+		draw_table(startHeight);
+		update_table();
+};
 				
 Record SimbleeTable::get_record_by_loc(int crcBase36) {
 	Record* ptrToSelRecord = NULL;
 	for (vector<Record>::iterator it  = rows.begin() ; it != rows.end(); ++it) {
-		if (*it->getWineLocation() == crcBase36) {
-			ptrToSelRecord = *it;
+		if (it->getWineLocation() == crcBase36) {
+            // &(*..) Dereferences iterator to reference directly the object.
+			ptrToSelRecord = &(*it);
 			break;
 		}
 	}
-	return &ptrToSelRecord;
+	return *ptrToSelRecord;
 }
 			
-void add_record(Record inputRecord) {
+void SimbleeTable::add_record(Record inputRecord) {
 	rows.push_back(inputRecord);
 }
 
-void del_record(int recordVectorIndex) {
-	rows.erase(recordVectorIndex);
+void SimbleeTable::del_record(int recordVectorIndex) {
+	rows.erase(rows.begin() + recordVectorIndex, rows.end() + recordVectorIndex + 1);
 }
 
-void get_total_records() {
-	return	rows.size();
+int SimbleeTable::get_total_records() {
+	return  rows.size();
 }
 
-vector<int> get_button_ids_vector() {
-	return button_ids;
+bool SimbleeTable::find_button_id(uint8_t searchValue) {
+    for (vector<int>::iterator it = button_ids.begin(); it != button_ids.end(); ++it) {
+        if (*it == searchValue) {
+            return true;
+        }
+    }
+	return false;
 }
 
-void update_button_ids_vector(vector<int>* newButtonVector);
-	button_ids = &newButtonVector;
+void SimbleeTable::update_button_ids_vector(vector<int>* newButtonVector) {
+	button_ids = *newButtonVector;
 }
 
-void get_label_ids_vector() {
-	return label_ids;
+bool SimbleeTable::find_label_id(uint8_t searchValue) {
+    for (vector<int>::iterator it = label_ids.begin(); it != label_ids.end(); ++it) {
+        if (*it == searchValue) {
+            return true;
+        }
+    }
+    return false;
 } 
 
-void update_label_ids_vector(vector<int>* newLabelVector) {
-	label_ids = &newLabelVector;
+void SimbleeTable::update_label_ids_vector(vector<int>* newLabelVector) {
+	label_ids = *newLabelVector;
 }
 
-void clear_table() {
+void SimbleeTable::clear_table() {
 	rows.clear();
 	
 	for (vector<int>::iterator it = button_ids.begin(); it != button_ids.end(); ++it) {
-		SimbleeForMobile.updateValue(*it->getButtonID(), "");
+		SimbleeForMobile.updateText(*it, "");
 	}
 	
 	for (vector<int>::iterator it = label_ids.begin(); it != label_ids.end(); ++it) {
-		SimbleeForMobile.updateValue(*it->getLabelID(), "");
+		SimbleeForMobile.updateText(*it, "");
 	}
 }
 
-void hide_object(int objectID) {
+void SimbleeTable::hide_object(int objectID) {
 	SimbleeForMobile.setVisible(objectID, false);
 }
 
-void show_object(int objectID) {
+void SimbleeTable::show_object(int objectID) {
 	SimbleeForMobile.setVisible(objectID, true);
 }
 
- 
+/** 
+ * A table is a collection of records. Columns added by need. 
+ */ 
+void SimbleeTable::draw_table(uint16_t startHeight) {
+	//	Table Name 
+
+	// if ((SimbleeForMobile.screenHeight - (inputRows * CELL_HEIGHT) < 0) || 
+	// 		(SimbleeForMobile.screenWidth - (inputCols * CELL_ROW) < 0))		 {
+	// 	throw std::out_of_range("Number of rows exceed screenHeight");
+	// }
 	
+	uint16_t PERM_X = SimbleeForMobile.screenWidth;
+	uint16_t PERM_Y = SimbleeForMobile.screenHeight;
+
+    SimbleeForMobile.drawText(PERM_X / 2 - 100, 50, "STORED WINES", BLACK, 30);
+    draw_slider(5, startHeight, PERM_X - 10, 0, 10);
+
+	for (int border = startHeight + 50; border <= PERM_Y; border += 47) {
+		draw_line(5, border, 'r', PERM_X - 10);
+        if (border < PERM_Y) {
+            add_button(5, border + 5, PERM_X - 10, "asdfasdf"); 
+            int label_width = PERM_X - 50;
+            add_label(label_width, border + 14, "TEST");
+        }
+	}
+}
+
+void    SimbleeTable::update_table() {
+	for (vector<Record>::iterator it = rows.begin(); it != rows.end(); ++it) {
+        const char* tempCharArray = String(it->getWineLocation(), 36).c_str();
+        
+		SimbleeForMobile.updateText(it->getButtonID(), it->getWineName().c_str());
+		SimbleeForMobile.updateText(it->getLabelID(), tempCharArray);
+	}
+}		
+	
+/**
+ * Draws a line given a coordinate pair (x, y). Direction is char representing
+ * 	direction within the set ['d', 'r']. Length being line length.
+ */
+void	SimbleeTable::draw_line(int startX, int startY, char dir, int len) {
+		switch(dir) {
+			case 'd':
+				SimbleeForMobile.drawRect(startX, startY, 1, len, BLACK);
+				break;
+			case 'r':
+				SimbleeForMobile.drawRect(startX, startY, len, 1, BLACK);
+				break;
+	}
+}
+
+void	SimbleeTable::add_button(int startX, int startY, int width, const char *title) {
+	button_ids.push_back(SimbleeForMobile.drawButton(startX, startY, width, title, YELLOW, TEXT_TYPE)); 
+}
+
+void	SimbleeTable::draw_slider(int startX, int startY, int width, int minS, int maxS) {
+	SimbleeForMobile.drawSlider(startX, startY, width, minS, maxS);
+}
+
+void	SimbleeTable::add_label(int startX, int startY, const char *text) {
+	label_ids.push_back(SimbleeForMobile.drawText(startX, startY, text));
+}
+
 	

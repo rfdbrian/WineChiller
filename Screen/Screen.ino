@@ -91,9 +91,7 @@ void SimbleeForMobile_onConnect()
  * Not used in this sketch. Could clean up any resources
  * no longer required.
  */
-void SimbleeForMobile_onDisconnect()
-{
-}
+
 
 /*
  * SimbleeForMobile ui callback requesting the user interface
