@@ -25,16 +25,13 @@ const char* ANOMALY = "WINE TO STORE";
 
 const char* const bullDozer[2] = {STASIS, ANOMALY};
 int currentScreen;
-SimbleeTable basicTable;
-
-
+SimbleeTable stasisTable;
+SimbleeTable anomalyTable; 
 
 void SimbleeForMobile_onConnect()
 {
   currentScreen = -1;
 }  
-
-
 
 /*
  * Create the first screen.
@@ -55,6 +52,11 @@ void createStasisScreen()
 //  int textID = SimbleeForMobile.drawText(80, 60, "Screen 1", BLACK, 40);
 //  toScreen2ButtonID = SimbleeForMobile.drawButton(100, 200, 100, "Screen 2");
 
+  color_t darkgray = rgb(50,50,50);
+  SimbleeForMobile.beginScreen(darkgray);
+  stasisTable = SimbleeTable(100);
+  SimbleeForMobile.endScreen();
+
   //
   // Receive notifications when a "release" occurs on the button.
   // Other event notifications are supported and can be combined in this call.
@@ -72,18 +74,18 @@ void createStasisScreen()
 //  SimbleeForMobile.setEvents(toScreen2ButtonID, h);
   SimbleeForMobile.endScreen();
 }
+
 void createAnomalyScreen()
 {
   //
   // Default to Portrait orientation
   //
 
+
   color_t darkgray = rgb(85,85,85);
   SimbleeForMobile.beginScreen(darkgray);
-  basicTable = SimbleeTable(100);
+  anomalyTable = SimbleeTable(100);
   SimbleeForMobile.endScreen();
-
-//  SimbleeForMobile.setEvents(toScreen1ButtonID, EVENT_RELEASE);
 }
 
 void printEvent(event_t &event)
@@ -110,30 +112,27 @@ void printEvent(event_t &event)
 /**
  * TODO: Reset UI-demo
  */
-void SimbleeForMobile_onDisconnect()
-{
+void SimbleeForMobile_onDisconnect() {
 }
 
-void setup(){
-  SimbleeForMobile.advertisementData = "WineAndChill";
+void setup() {
+  SimbleeForMobile.advertisementData = "DasChill";
 
   SimbleeForMobile.begin();
 }
 
-void loop(){
+void loop() {
   if(SimbleeForMobile.updatable){
         
   }
   SimbleeForMobile.process();
 }
 
-void ui(){
-
+void ui() {
   if(SimbleeForMobile.screen == currentScreen) return;
   
   currentScreen = SimbleeForMobile.screen;
-  switch(SimbleeForMobile.screen)
-  {
+  switch (SimbleeForMobile.screen) {
     case 1:
       createStasisScreen();
       break;
@@ -143,28 +142,27 @@ void ui(){
       break;
             
    default:
-      Serial.print("ui: Uknown screen requested: ");
+      Serial.print("ui: Unknown screen requested: ");
       Serial.println(SimbleeForMobile.screen);
   }
-  
 }
 
 void ui_event(event_t &event) {
   eventID = event.id;
 
   printEvent(event);
-//  if(event.id == toScreen1ButtonID && event.type == EVENT_RELEASE && currentScreen == 2)
-//  {
-//    SimbleeForMobile.showScreen(1);
-//  } else if(event.id == toScreen2ButtonID && event.type == EVENT_RELEASE && currentScreen == 1) 
-//  {
-//    SimbleeForMobile.showScreen(2);
-//  }
-  
-  if (basicTable.find_button_id(eventID)) {
-    SimbleeForMobile.updateText(eventID, "CLICKED");
+  if(stasisTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 1) {
+    SimbleeForMobile.showScreen(2);
+  } else if(anomalyTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 2) {
+    SimbleeForMobile.showScreen(1);
   }
-  if (basicTable.find_label_id(eventID)) {
-    SimbleeForMobile.updateText(eventID, "CLICKED");
-  }
+
+ //  if (stasisTable.find_button_id(eventID)) {
+ //    SimbleeForMobile.updateText(eventID, "CLICKED");
+ //  //	SimbleeForMobile.showScreen(2);
+ //  }
+
+ //  if (stasisTable.find_label_id(eventID)) {
+ //    SimbleeForMobile.updateText(eventID, "CLICKED");
+ //  }
 }

@@ -2,8 +2,6 @@
 
 SimbleeTable::SimbleeTable() :
     rows(NULL), button_ids(NULL), label_ids(NULL), slider_id(0) {
-        draw_table(0);
-        update_table();
 };
 
 SimbleeTable::SimbleeTable(uint16_t startHeight) :
@@ -109,7 +107,7 @@ void SimbleeTable::draw_table(uint16_t startHeight) {
 	}
 }
 
-void    SimbleeTable::update_table() {
+void	SimbleeTable::update_table() {
 	for (vector<Record>::iterator it = rows.begin(); it != rows.end(); ++it) {
         const char* tempCharArray = String(it->getWineLocation(), 36).c_str();
         
@@ -134,7 +132,9 @@ void	SimbleeTable::draw_line(int startX, int startY, char dir, int len) {
 }
 
 void	SimbleeTable::add_button(int startX, int startY, int width, const char *title) {
-	button_ids.push_back(SimbleeForMobile.drawButton(startX, startY, width, title, YELLOW, TEXT_TYPE)); 
+	uint8_t deviceID = SimbleeForMobile.drawButton(startX, startY, width, title, YELLOW, TEXT_TYPE);
+	SimbleeForMobile.setEvents(deviceID, EVENT_RELEASE);
+	button_ids.push_back(deviceID); 
 }
 
 void	SimbleeTable::draw_slider(int startX, int startY, int width, int minS, int maxS) {
