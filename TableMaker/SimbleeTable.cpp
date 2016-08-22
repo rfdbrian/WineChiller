@@ -1,9 +1,8 @@
 #include "SimbleeTable.h"
 
-SimbleeTable::SimbleeTable(int inputRows = 2, int inputCols = 1) :
-	rows(inputRows), columns(inputCols), tableCell(NULL), cellID(NULL) {
+SimbleeTable::SimbleeTable() :
+	rows(NULL), button_ids(NULL), label_ids(NULL) {
 		drawTable();
-		drawTableTextContainers();
 };
 
 /** 
@@ -58,8 +57,66 @@ void SimbleeTable::drawTableTextContainers() {
 		}
 	}
 }	
-
-
-	
 				
+Record SimbleeTable::get_record_by_loc(int crcBase36) {
+	Record* ptrToSelRecord = NULL;
+	for (vector<Record>::iterator it  = rows.begin() ; it != rows.end(); ++it) {
+		if (*it->getWineLocation() == crcBase36) {
+			ptrToSelRecord = *it;
+			break;
+		}
+	}
+	return &ptrToSelRecord;
+}
+			
+void add_record(Record inputRecord) {
+	rows.push_back(inputRecord);
+}
+
+void del_record(int recordVectorIndex) {
+	rows.erase(recordVectorIndex);
+}
+
+void get_total_records() {
+	return	rows.size();
+}
+
+vector<int> get_button_ids_vector() {
+	return button_ids;
+}
+
+void update_button_ids_vector(vector<int>* newButtonVector);
+	button_ids = &newButtonVector;
+}
+
+void get_label_ids_vector() {
+	return label_ids;
+} 
+
+void update_label_ids_vector(vector<int>* newLabelVector) {
+	label_ids = &newLabelVector;
+}
+
+void clear_table() {
+	rows.clear();
+	
+	for (vector<int>::iterator it = button_ids.begin(); it != button_ids.end(); ++it) {
+		SimbleeForMobile.updateValue(*it->getButtonID(), "");
+	}
+	
+	for (vector<int>::iterator it = label_ids.begin(); it != label_ids.end(); ++it) {
+		SimbleeForMobile.updateValue(*it->getLabelID(), "");
+	}
+}
+
+void hide_object(int objectID) {
+	SimbleeForMobile.setVisible(objectID, false);
+}
+
+void show_object(int objectID) {
+	SimbleeForMobile.setVisible(objectID, true);
+}
+
+ 
+	
 	

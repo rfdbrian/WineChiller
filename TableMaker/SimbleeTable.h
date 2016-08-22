@@ -46,7 +46,7 @@ class SimbleeTable {
 		void update_button_ids_vector(vector<int>* newButtonVector);
 		
 		vector<int> get_label_ids_vector();
-		void update_label_ids_vector(vector<int>* newButtonVector);
+		void update_label_ids_vector(vector<int>* newLabelVector);
 
 		void clear_table();
 		void hide_object(int objectID);
