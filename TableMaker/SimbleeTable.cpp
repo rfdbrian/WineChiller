@@ -22,12 +22,30 @@ Record SimbleeTable::get_record_by_loc(int crcBase36) {
 	return *ptrToSelRecord;
 }
 			
+Record SimbleeTable::get_record_by_button_id(int inputObjectID) {
+	Record* ptrToSelRecord = NULL;
+	for (vector<Record>::iterator it  = rows.begin() ; it != rows.end(); ++it) {
+		if (it->getButtonID() == inputObjectID) {
+            // &(*..) Dereferences iterator to reference directly the object.
+			ptrToSelRecord = &(*it);
+			break;
+		}
+	}
+	return *ptrToSelRecord;
+}
+
 void SimbleeTable::add_record(Record inputRecord) {
 	rows.push_back(inputRecord);
 }
 
-void SimbleeTable::del_record(int recordVectorIndex) {
-	rows.erase(rows.begin() + recordVectorIndex, rows.end() + recordVectorIndex + 1);
+void SimbleeTable::del_record(Record &inputRecord) {
+
+	for (vector<Record>::iterator it = rows.begin(); it != rows.end(); ++it) {
+		if (it->getWineLocation() == inputRecord.getWineLocation()) {
+			rows.erase(it);
+			return;
+		}
+	}
 }
 
 int SimbleeTable::get_total_records() {

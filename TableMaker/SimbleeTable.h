@@ -4,7 +4,7 @@
 #include <SimbleeForMobile.h>
 #include <stdexcept>
 #include <vector>
-#include <algorithm>
+#include <map>
 #include "Record.h"
 
 #define vector std::vector
@@ -26,17 +26,18 @@ class SimbleeTable {
 		void shift_list(int value);
 
 	public:
-        SimbleeTable();		
-        SimbleeTable(uint16_t startHeight);
+		SimbleeTable();		
+		SimbleeTable(uint16_t startHeight);
 
 		Record get_record_by_loc(int crcBase36);
+		Record get_record_by_button_id(int inputObjectID);
 		void add_record(Record inputRecord);
-		void del_record(int recordVectorIndex);
+		void del_record(Record &inputRecord);
 		int get_total_records();
 
 		bool find_button_id(uint8_t buttonID);
 		void update_button_ids_vector(vector<int>* newButtonVector);
-		
+
 		bool find_label_id(uint8_t buttonID);
 		void update_label_ids_vector(vector<int>* newLabelVector);
 
@@ -44,6 +45,6 @@ class SimbleeTable {
 		void hide_object(int objectID);
 		void show_object(int objectID);
 };
-		
+
 
 #endif 
