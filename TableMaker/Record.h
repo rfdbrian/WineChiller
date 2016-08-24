@@ -11,6 +11,7 @@ class Record {
 		int	wineLocation;
 		int buttonID;
 		int labelID;
+        bool empty;
 
 	public:
     Record();
@@ -19,7 +20,8 @@ class Record {
 
 		void updateLocation(int inputWineLocation);
 		void updateRecordData(String inputWineName, int inputWineLocation);
-		void updateRecordObjectIDs(int inputButtonID, int inputLabelID);
+		void updateRecordButtonID(int inputButtonID);
+        void updateRecordLabelID(int inputLabelID);
 		//	May be unneeded. Names are provided and verified.
 		//	void updateWineName(int wineLocation);
 		
@@ -28,6 +30,7 @@ class Record {
 		String getWineLocationAsString();
 		int getButtonID();
 		int	getLabelID();
+        bool isEmpty();
 };
 		
 #endif

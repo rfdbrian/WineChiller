@@ -2,10 +2,10 @@
 
 
 Record::Record() : 
-    wineName(""), wineLocation(0), buttonID(0), labelID(0) { }
+    wineName(""), wineLocation(0), buttonID(-1), labelID(-1), empty(true) { }
     
 Record::Record(String inputWineName) : 
-	wineName(inputWineName), wineLocation(0), buttonID(0), labelID(0) { }
+	wineName(inputWineName), wineLocation(0), buttonID(-1), labelID(-1), empty(false) { }
 
 Record::~Record() { } 
 
@@ -15,6 +15,7 @@ Record::~Record() { }
  */
 void Record::updateLocation(int inputWineLocation) {
 	wineLocation = inputWineLocation; 
+    empty = false;
 }
 
 void Record::updateRecordData(String inputWineName, int inputWineLocation) {
@@ -22,9 +23,12 @@ void Record::updateRecordData(String inputWineName, int inputWineLocation) {
 	wineLocation = inputWineLocation;
 }
 
-void Record::updateRecordObjectIDs(int inputButtonID, int inputLabelID) {
-	buttonID = inputButtonID;
+void Record::updateRecordLabelID(int inputLabelID) {
 	labelID = inputLabelID;
+}
+
+void Record::updateRecordButtonID(int inputButtonID) {
+    buttonID = inputButtonID;
 }
 
 String Record::getWineName() {
@@ -47,3 +51,8 @@ int Record::getButtonID() {
 int Record::getLabelID() {
 	return labelID;
 }	
+
+bool Record::isEmpty() {
+    return empty;
+}
+
