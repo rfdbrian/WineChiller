@@ -97,7 +97,7 @@ void SimbleeTable::draw_table(uint16_t startHeight, const char* screenTitle) {
 	uint16_t PERM_Y = SimbleeForMobile.screenHeight;
 
 	SimbleeForMobile.drawText(PERM_X / 2 - 100, 50, screenTitle, BLACK, 30);
-	draw_slider(5, startHeight, PERM_X - 10, 0, 10);
+//	draw_slider(5, startHeight, PERM_X - 10, 0, 10);
 
 	for (int border = startHeight + 50; border <= PERM_Y; border += 47) {
 		draw_line(5, border, 'r', PERM_X - 10);
@@ -167,7 +167,8 @@ void	SimbleeTable::draw_line(int startX, int startY, char dir, int len) {
 }
 
 void	SimbleeTable::add_button(int startX, int startY, int width, const char *title) {
-	uint8_t deviceID = SimbleeForMobile.drawButton(startX, startY, width, title, YELLOW, TEXT_TYPE);
+    color_t fuschia = rgb(255, 0, 128);
+	uint8_t deviceID = SimbleeForMobile.drawButton(startX, startY, width, title, fuschia, TEXT_TYPE);
 	SimbleeForMobile.setEvents(deviceID, EVENT_RELEASE);
 	button_ids[deviceID] = -1;
 }
@@ -177,7 +178,8 @@ void	SimbleeTable::draw_slider(int startX, int startY, int width, int minS, int 
 }
 
 void	SimbleeTable::add_label(int startX, int startY, const char *text) {
-	uint8_t deviceID = SimbleeForMobile.drawText(startX, startY, text);
+    color_t fuschia = rgb(255, 0, 128);
+	uint8_t deviceID = SimbleeForMobile.drawText(startX, startY, text, fuschia);
 	label_ids[deviceID] = -1;
 }
 
