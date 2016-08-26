@@ -18,6 +18,7 @@
 */
 
 #include "SimbleeTable.h"
+#include <stdlib.h>
 
 uint8_t eventID;
 const char* STASIS = "INVENTORY";
@@ -28,15 +29,15 @@ int currentScreen;
 Record* selectedBottle;
 uint8_t extractionDrinkingButton;
 uint8_t extractionRecyclingButton;
+char updateTrue = 0;
 
 char switchValue[64];
-String receivedLoc = "";
+int receivedLoc = -1;
 int switchOnOff = -1;
 vector<Record> removedBottles;
 std::map<int, long> cellTimings;
 
-SimbleeTable stasisTable = SimbleeTable();
-SimbleeTable anomalyTable = SimbleeTable();
+SimbleeTable wineTable = SimbleeTable();
 
 void SimbleeForMobile_onConnect() {
   currentScreen = -1;
@@ -45,26 +46,16 @@ void SimbleeForMobile_onConnect() {
 void createStasisScreen() {
   color_t darkgray = rgb(85, 85, 85);
   SimbleeForMobile.beginScreen(darkgray);
-  stasisTable.draw_table(100, "WINE INVENTORY");
-  stasisTable.update_table();
+  wineTable.draw_table(100, "WINE INVENTORY");
   SimbleeForMobile.endScreen();
 }
 
 void createAnomalyScreen() {
   color_t darkgray = rgb(85, 85, 85);
   SimbleeForMobile.beginScreen(darkgray);
-  
-  anomalyTable.draw_table(100, "WINE LIMBO");
-  
-  anomalyTable.add_record(Record("Los Reveles"));
-  anomalyTable.add_record(Record("Francis Coppola"));
-  anomalyTable.add_record(Record("Proximo"));
-  anomalyTable.add_record(Record("Perez Cruz"));
-  anomalyTable.add_record(Record("Baron de Marny"));
-  anomalyTable.add_record(Record("Prieure de Cenac"));
 
-  anomalyTable.update_table();
-  
+  wineTable.draw_table(100, "WINE LIMBO");
+
   SimbleeForMobile.endScreen();
 }
 
@@ -72,21 +63,20 @@ void createExtractionScreen() {
   color_t darkgray = rgb(85, 85, 85);
   SimbleeForMobile.beginScreen(darkgray);
 
-  int extractionText = SimbleeForMobile.drawText(80, 60,  selectedBottle->getWineName().c_str(), BLACK, 40);
+  int extractionText = SimbleeForMobile.drawText(80, 60,  "Problems yo", BLACK, 40);
   extractionDrinkingButton = SimbleeForMobile.drawButton(100, 200, 100, "Drank");
-  extractionRecyclingButton = SimbleeForMobile.drawButton(100, 200, 100, "Gifted");
+  extractionRecyclingButton = SimbleeForMobile.drawButton(100, 250, 100, "Gifted");
 
   SimbleeForMobile.setEvents(extractionDrinkingButton, EVENT_RELEASE);
   SimbleeForMobile.setEvents(extractionRecyclingButton, EVENT_RELEASE);
-    
+
   SimbleeForMobile.endScreen();
 }
 
 void createInsertionScreen() {
   color_t darkgray = rgb(85, 85, 85);
   SimbleeForMobile.beginScreen(darkgray);
-  anomalyTable.draw_table(100, "SELECT BOTTLE");
-  anomalyTable.update_table();
+  wineTable.draw_table(100, "SELECT BOTTLE");
   SimbleeForMobile.endScreen();
 }
 
@@ -110,31 +100,32 @@ void printEvent(event_t &event) {
   Serial.println(event.y);
 }
 
-
-
-int charToValueInBase36(char inputChar) {
-  if (inputChar >= '0' && inputChar <= '9') {
-    return inputChar - '0';
-  }
-  if (inputChar >= 'A' && inputChar <= 'Z') {
-    return inputChar - 'A' + 10;
-  }
-  return 0;
-}
-
-uint16_t strToBase36(String inputString) {
-  int secondTerm = charToValueInBase36(inputString[0]) * 36;
-  int firstTerm = charToValueInBase36(inputString[1]);
-  
-  return (firstTerm + secondTerm);
-}
-
-
-
 void setup() {
   Serial.begin(9600);
   SimbleeForMobile.advertisementData = "DasChill";
   SimbleeForMobile.begin();
+  wineTable.add_record("Los Reveles");
+  wineTable.add_record("Francis Coppola");
+  wineTable.add_record("Proximo");
+  wineTable.add_record("Perez Cruz");
+  wineTable.add_record("Baron de Marny");
+  wineTable.add_record("Prieure de Cenac");
+  Serial.println("Are we here");
+}
+
+int htoi (char c) {  //does not check that input is valid
+   if (c >= '0' && c<='9')
+       return c-'0';
+   if (c >= 'A' && c<='Z')
+       return c -'A'+10;
+   if (c >= 'a' && c<='z')
+       return c -'a'+10;
+   return 0;
+}
+
+int crcBase36(char* test) {
+    int result = htoi(test[0]) * 36 + htoi(test[1]);
+    return result;
 }
 
 void loop() {
@@ -142,39 +133,30 @@ void loop() {
     Serial.readBytesUntil('\n', switchValue, 32);
     char test[8];
     sscanf(switchValue, "%2s:%d", test, &switchOnOff);
-    receivedLoc = String(test).substr(0,2);
+    receivedLoc = crcBase36(test);
     if (switchOnOff == 0) {
-      cellTimings[strToBase36(receivedLoc)] = millis();
+//      cellTimings[receivedLoc] = millis();
     }
     Serial.print("Location: ");
-    Serial.println(receivedLoc.c_str());
+    Serial.println(String(receivedLoc, 36));
     Serial.print("Switch state: ");
     Serial.println(switchOnOff);
   }
 
   if (switchOnOff == 1) {
-    //  Wine bottle has been inserted.
-    std::map<int, long>::iterator it = cellTimings.find(strToBase36(receivedLoc));
-    if (it != cellTimings.end() && ((millis() - it->second) < 5000)) {
-      cellTimings.erase(it);
-      return;
-    } else if (it == cellTimings.end()) {
-      anomalyTable.update_table();
       SimbleeForMobile.showScreen(4);
-    }
+    switchOnOff = -1;
+  } else if (switchOnOff == 0) {
+    SimbleeForMobile.showScreen(3);
     switchOnOff = -1;
   }
 
   if (SimbleeForMobile.updatable) {
-    if (currentScreen != 3 && currentScreen != 4) {
-      for (std::map<int, long>::iterator it = cellTimings.begin(); it != cellTimings.end(); ++it) {
-        if ((millis() - it->second) > 5000) {
-          selectedBottle = stasisTable.get_record_by_loc(it->first);
-          SimbleeForMobile.showScreen(3);
-          switchOnOff = -1;
-          return;
-        }
-      }
+    if (updateTrue != 0) {
+        wineTable.update_table(updateTrue);
+        wineTable.update_table(updateTrue);
+        wineTable.update_table(updateTrue);
+        updateTrue = 0;
     }
   }
 
@@ -188,18 +170,26 @@ void ui() {
   switch (SimbleeForMobile.screen) {
     case 1:
       createStasisScreen();
+      updateTrue = 's';
+//      wineTable.update_table('s');
       break;
 
     case 2:
       createAnomalyScreen();
+      updateTrue = 'l';
+//        wineTable.update_table('l');
       break;
 
     case 3:
       createExtractionScreen();
+//      updateTrue = 'l';
+//        wineTable.update_table('l');
       break;
 
     case 4:
       createInsertionScreen();
+      updateTrue = 'l';
+//    wineTable.update_table('l');
       break;
 
     default:
@@ -209,34 +199,36 @@ void ui() {
 }
 
 void addToInventory(uint8_t inputEventID) {
-  selectedBottle = anomalyTable.get_record_by_button_id(inputEventID);
+  selectedBottle = wineTable.get_record_by_button_id(inputEventID, 'l');
+  selectedBottle->updateLocation(receivedLoc);
+  selectedBottle->updateState('s');
+  selectedBottle = NULL;
+}
 
-  Record newBottle = Record(selectedBottle->getWineName());
-  newBottle.updateLocation(strToBase36(receivedLoc));
-  anomalyTable.del_record(selectedBottle);
-  Serial.println(newBottle.getWineName().c_str());
-  stasisTable.add_record(newBottle);
-
-//  stasisTable.update_table(); 
+void removeFromInventory(uint8_t inputEventID) {
+    Serial.println("Okay");
+  selectedBottle = wineTable.get_record_by_button_id(inputEventID, 's');
+  selectedBottle->updateLocation(-1);
+  selectedBottle->updateState('l');
+  selectedBottle = NULL;
 }
 
 void ui_event(event_t &event) {
   eventID = event.id;
 
   printEvent(event);
-  if (stasisTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 1) {
+  if (wineTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 1) {
     SimbleeForMobile.showScreen(2);
-  } else if (anomalyTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 2) {
+  } else if (wineTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 2) {
     SimbleeForMobile.showScreen(1);
-    Serial.println(stasisTable.get_total_records());
-  } else if (anomalyTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 4) {
+  } else if (wineTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 4) {
     addToInventory(eventID);
     SimbleeForMobile.showScreen(1);
   } else if (eventID == extractionDrinkingButton && event.type == EVENT_RELEASE && currentScreen == 3) {
-//    stasisTable.del_record(selectedBottle);
+    removeFromInventory(eventID);
     SimbleeForMobile.showScreen(1);
   } else if (eventID == extractionRecyclingButton && event.type == EVENT_RELEASE && currentScreen == 3) {
-//    stasisTable.del_record(selectedBottle);
+    removeFromInventory(eventID);
     SimbleeForMobile.showScreen(1);
   }
 

@@ -3,34 +3,35 @@
 
 #include <string>
 
-#define String std::string
+#define cString std::string
 
 class Record {
 	private:
-		String wineName;
+		cString wineName;
 		int	wineLocation;
 		int buttonID;
 		int labelID;
-        bool empty;
+		char state;
 
 	public:
-    Record();
-		Record(String inputWineName);
-		~Record();
+		Record();
+		Record(cString inputWineName, char inputState);
 
 		void updateLocation(int inputWineLocation);
-		void updateRecordData(String inputWineName, int inputWineLocation);
-		void updateRecordButtonID(int inputButtonID);
-        void updateRecordLabelID(int inputLabelID);
+		void updateState(char defState);
+		void updateButtonID(int inputButtonID);
+		void updateLabelID(int inputLabelID);
+
 		//	May be unneeded. Names are provided and verified.
 		//	void updateWineName(int wineLocation);
-		
-		String getWineName();
+
+		cString getWineName();
 		int	getWineLocation();
-		String getWineLocationAsString();
+		cString getWineLocationAscString();
 		int getButtonID();
 		int	getLabelID();
-        bool isEmpty();
-};
+		char getState();
 		
+};
+
 #endif

@@ -1,13 +1,10 @@
 #include "Record.h"
 
-
 Record::Record() : 
-    wineName(""), wineLocation(0), buttonID(-1), labelID(-1), empty(true) { }
-    
-Record::Record(String inputWineName) : 
-	wineName(inputWineName), wineLocation(0), buttonID(-1), labelID(-1), empty(false) { }
+	wineName(""), wineLocation(-1), buttonID(-1), labelID(-1), state(-1) { };
 
-Record::~Record() { } 
+Record::Record(cString inputWineName, char inputState) : 
+	wineName(inputWineName), wineLocation(-1), buttonID(-1), labelID(-1), state(inputState) { };
 
 /*
  *	Function: Wine location is a 36-base number, describing
@@ -15,23 +12,21 @@ Record::~Record() { }
  */
 void Record::updateLocation(int inputWineLocation) {
 	wineLocation = inputWineLocation; 
-    empty = false;
 }
 
-void Record::updateRecordData(String inputWineName, int inputWineLocation) {
-	wineName = inputWineName;
-	wineLocation = inputWineLocation;
-}
-
-void Record::updateRecordLabelID(int inputLabelID) {
+void Record::updateLabelID(int inputLabelID) {
 	labelID = inputLabelID;
 }
 
-void Record::updateRecordButtonID(int inputButtonID) {
-    buttonID = inputButtonID;
+void Record::updateButtonID(int inputButtonID) {
+	buttonID = inputButtonID;
 }
 
-String Record::getWineName() {
+void Record::updateState(char defState) {
+	state = defState;
+}
+
+cString Record::getWineName() {
 	return wineName;
 }
 
@@ -39,8 +34,8 @@ int Record::getWineLocation() {
 	return wineLocation;
 }
 
-String Record::getWineLocationAsString() {
-	String result = String(wineLocation, 36);	
+cString Record::getWineLocationAscString() {
+	cString result = cString(wineLocation, 36);	
 	return result;
 }
 
@@ -52,7 +47,7 @@ int Record::getLabelID() {
 	return labelID;
 }	
 
-bool Record::isEmpty() {
-    return empty;
+char Record::getState() {
+	return state;
 }
 
