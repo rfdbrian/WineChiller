@@ -35,7 +35,6 @@ char switchValue[64];
 int receivedLoc = -1;
 int switchOnOff = -1;
 vector<Record> removedBottles;
-std::map<int, long> cellTimings;
 
 SimbleeTable wineTable = SimbleeTable();
 
@@ -134,9 +133,6 @@ void loop() {
     char test[8];
     sscanf(switchValue, "%2s:%d", test, &switchOnOff);
     receivedLoc = crcBase36(test);
-    if (switchOnOff == 0) {
-//      cellTimings[receivedLoc] = millis();
-    }
     Serial.print("Location: ");
     Serial.println(String(receivedLoc, 36));
     Serial.print("Switch state: ");
@@ -153,8 +149,6 @@ void loop() {
 
   if (SimbleeForMobile.updatable) {
     if (updateTrue != 0) {
-        wineTable.update_table(updateTrue);
-        wineTable.update_table(updateTrue);
         wineTable.update_table(updateTrue);
         updateTrue = 0;
     }
@@ -205,9 +199,9 @@ void addToInventory(uint8_t inputEventID) {
   selectedBottle = NULL;
 }
 
-void removeFromInventory(uint8_t inputEventID) {
+void removeFromInventory() {
     Serial.println("Okay");
-  selectedBottle = wineTable.get_record_by_button_id(inputEventID, 's');
+    selectedBottle = wineTable.get_record_by_loc(receivedLoc);
   selectedBottle->updateLocation(-1);
   selectedBottle->updateState('l');
   selectedBottle = NULL;
@@ -225,10 +219,10 @@ void ui_event(event_t &event) {
     addToInventory(eventID);
     SimbleeForMobile.showScreen(1);
   } else if (eventID == extractionDrinkingButton && event.type == EVENT_RELEASE && currentScreen == 3) {
-    removeFromInventory(eventID);
+    removeFromInventory();
     SimbleeForMobile.showScreen(1);
   } else if (eventID == extractionRecyclingButton && event.type == EVENT_RELEASE && currentScreen == 3) {
-    removeFromInventory(eventID);
+    removeFromInventory();
     SimbleeForMobile.showScreen(1);
   }
 
