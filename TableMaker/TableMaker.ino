@@ -42,6 +42,8 @@ uint8_t extractionRecyclingButton;
 uint8_t listPurchasedButton;
 uint8_t listWishyWashyButton;
 uint8_t listWineYourFavorButton;
+uint8_t listBuyButton;
+uint8_t listViewInventoryButton;
 
 //	Thanks screen timer
 unsigned long thankYouTimer;
@@ -52,14 +54,28 @@ void SimbleeForMobile_onConnect() {
 	currentScreen = -1;
 }
 
+void createBuyScreen() {
+    SimbleeForMobile.beginScreen(WHITE);
+    color_t fuschia = rgb(255, 0, 128);
+
+
+    SimbleeForMobile.drawText(90, 60,  "GLASSY", BLACK, 40);
+    listBuyButton = SimbleeForMobile.drawButton(60, 150, 200, "BUY WINE", fuschia, BOX_TYPE);
+    listViewInventoryButton = SimbleeForMobile.drawButton(60, 200, 200, "VIEW INVENTORY", fuschia, BOX_TYPE);
+
+    SimbleeForMobile.setEvents(listBuyButton, EVENT_RELEASE);
+
+    SimbleeForMobile.endScreen();
+}
+
 void createListsScreen() {
 	SimbleeForMobile.beginScreen(WHITE);
 	color_t fuschia = rgb(255, 0, 128);
 
 	int listText = SimbleeForMobile.drawText(110, 60,  "LISTS", BLACK, 40);
-	listPurchasedButton = SimbleeForMobile.drawButton(60, 150, 200, "PURCHASED", fuschia, BOX_TYPE);
-	listWishyWashyButton = SimbleeForMobile.drawButton(60, 200, 200, "WISH A' WINE", fuschia, BOX_TYPE);
-	listWineYourFavorButton = SimbleeForMobile.drawButton(60, 250, 200, "WINE IN YOUR FAVOR", fuschia, BOX_TYPE);
+	listPurchasedButton = SimbleeForMobile.drawButton(60, 150, 200, "NEWLY PURCHASED", fuschia, BOX_TYPE);
+	listWishyWashyButton = SimbleeForMobile.drawButton(60, 200, 200, "WISHLIST", fuschia, BOX_TYPE);
+	listWineYourFavorButton = SimbleeForMobile.drawButton(60, 250, 200, "FAVORITES", fuschia, BOX_TYPE);
 
 	SimbleeForMobile.setEvents(listPurchasedButton, EVENT_RELEASE);
 	SimbleeForMobile.setEvents(listWishyWashyButton, EVENT_RELEASE);
@@ -68,10 +84,9 @@ void createListsScreen() {
 	SimbleeForMobile.endScreen();
 }
 
-
 void createThanksScreen() {
 	SimbleeForMobile.beginScreen(WHITE);
-	int listText = SimbleeForMobile.drawText(43, 200,  "THANKS FOR\n CHILLIN' AT\nFIRSTBUILD!!", BLACK, 40);
+	int listText = SimbleeForMobile.drawText(43, 200,  "THANK YOU!!", BLACK, 40);
 	thankYouTimer = millis();
 	SimbleeForMobile.endScreen();
 }
@@ -88,7 +103,8 @@ void createAnomalyScreen() {
 	color_t darkgray = rgb(85, 85, 85);
 	color_t fuschia = rgb(255, 0, 128);
     SimbleeForMobile.beginScreen(WHITE);
-	wineTable.draw_table(100, "PURCHASED");
+	wineTable.draw_table(100, "NEWLY PURCHASED");
+    SimbleeForMobile.drawText(60, 120,  "PLACE BOTTLE IN RACK", BLACK, 20);
 	SimbleeForMobile.endScreen();
 }
 
@@ -97,7 +113,7 @@ void createExtractionScreen() {
 	color_t fuschia = rgb(255, 0, 128);
     SimbleeForMobile.beginScreen(WHITE);
 
-	int extractionText = SimbleeForMobile.drawText(40, 60,  "WINE REMOVED\n  BECAUSE...", BLACK, 40);
+	int extractionText = SimbleeForMobile.drawText(40, 60,  "WINE REMOVED", BLACK, 40);
 	extractionDrinkingButton = SimbleeForMobile.drawButton(100, 200, 100, "DRANK", fuschia, BOX_TYPE);
 	extractionRecyclingButton = SimbleeForMobile.drawButton(100, 250, 100, "GIFTED", fuschia, BOX_TYPE);
 
@@ -175,18 +191,18 @@ void loop() {
 
 	if (SimbleeForMobile.updatable) {
 		if (switchOnOff == 1) {
-			SimbleeForMobile.showScreen(4);
+			SimbleeForMobile.showScreen(5);
 			switchOnOff = -1;
 		} else if (switchOnOff == 0) {
-			SimbleeForMobile.showScreen(3);
+			SimbleeForMobile.showScreen(4);
 			switchOnOff = -1;
 		}
 		if (updateTrue != 0) {
 			wineTable.update_table(updateTrue);
 			updateTrue = 0;
 		}
-		if (currentScreen == 5) {
-			if ((millis() - thankYouTimer) > 3000) {
+		if (currentScreen == 6) {
+			if ((millis() - thankYouTimer) > 2000) {
 				thankYouTimer = 0;
 				SimbleeForMobile.showScreen(1);
 			}
@@ -201,27 +217,31 @@ void ui() {
 
 	currentScreen = SimbleeForMobile.screen;
 	switch (SimbleeForMobile.screen) {
-		case 1:
+        case 1:
+            createBuyScreen();
+            break;
+            
+		case 2:
 			createListsScreen();;
 			//createStasisScreen();
 			//updateTrue = 's';
 			break;
 
-		case 2:
+		case 3:
 			createAnomalyScreen();
 			updateTrue = 'l';
 			break;
 
-		case 3:
+		case 4:
 			createExtractionScreen();
 			break;
 
-		case 4:
+		case 5:
 			createInsertionScreen();
 			updateTrue = 'l';
 			break;
 		
-		case 5:
+		case 6:
 			createThanksScreen();
 			break;
 
@@ -256,19 +276,19 @@ void ui_event(event_t &event) {
 	eventID = event.id;
 
 	printEvent(event);
-	if (eventID == listPurchasedButton && event.type == EVENT_RELEASE && currentScreen == 1) {
-		SimbleeForMobile.showScreen(2);
-	//} else if (wineTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 2) {
-	//SimbleeForMobile.showScreen(1);
-	} else if (wineTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 4) {
+	if (eventID == listPurchasedButton && event.type == EVENT_RELEASE && currentScreen == 2) {
+		SimbleeForMobile.showScreen(3);
+	} else if (eventID == listBuyButton && event.type == EVENT_RELEASE && currentScreen == 1) {
+	    SimbleeForMobile.showScreen(2);
+	} else if (wineTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 5) {
 		addToInventory(eventID);
-		SimbleeForMobile.showScreen(5);
-	} else if (eventID == extractionDrinkingButton && event.type == EVENT_RELEASE && currentScreen == 3) {
+		SimbleeForMobile.showScreen(6);
+	} else if (eventID == extractionDrinkingButton && event.type == EVENT_RELEASE && currentScreen == 4) {
 		removeFromInventory();
-		SimbleeForMobile.showScreen(5);
-	} else if (eventID == extractionRecyclingButton && event.type == EVENT_RELEASE && currentScreen == 3) {
+		SimbleeForMobile.showScreen(6);
+	} else if (eventID == extractionRecyclingButton && event.type == EVENT_RELEASE && currentScreen == 4) {
 		removeFromInventory();
-		SimbleeForMobile.showScreen(5);
+		SimbleeForMobile.showScreen(6);
 	}
 
 	//  if (stasisTable.find_button_id(eventID)) {
