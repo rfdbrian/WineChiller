@@ -21,10 +21,6 @@ This heading must NOT be removed from this file.
 #include <stdlib.h>
 
 uint8_t eventID;
-const char* STASIS = "INVENTORY";
-const char* ANOMALY = "WINE TO STORE";
-
-const char* const bullDozer[2] = {STASIS, ANOMALY};
 int currentScreen;
 Record* selectedBottle;
 char updateTrue = 0;
@@ -40,10 +36,10 @@ uint8_t extractionRecyclingButton;
 
 //  List Screen Buttons
 uint8_t listPurchasedButton;
-uint8_t listWishyWashyButton;
-uint8_t listWineYourFavorButton;
 uint8_t listBuyButton;
 uint8_t listViewInventoryButton;
+
+std::map<uint8_t, uint8_t> resetButtons;
 
 //	Thanks screen timer
 unsigned long thankYouTimer;
@@ -54,33 +50,33 @@ void SimbleeForMobile_onConnect() {
 	currentScreen = -1;
 }
 
-void createBuyScreen() {
-    SimbleeForMobile.beginScreen(WHITE);
-    color_t fuschia = rgb(255, 0, 128);
-
-
-    SimbleeForMobile.drawText(90, 60,  "GLASSY", BLACK, 40);
-    listBuyButton = SimbleeForMobile.drawButton(60, 150, 200, "BUY WINE", fuschia, BOX_TYPE);
-    listViewInventoryButton = SimbleeForMobile.drawButton(60, 200, 200, "VIEW INVENTORY", fuschia, BOX_TYPE);
-
-    SimbleeForMobile.setEvents(listBuyButton, EVENT_RELEASE);
-
-    SimbleeForMobile.endScreen();
+void SimbleeForMobile_onDisconnect() {
+	currentScreen  = -1;
+	switchOnOff = -1;
+	receivedLoc = -1;
 }
 
-void createListsScreen() {
+void createBuyScreen() {
 	SimbleeForMobile.beginScreen(WHITE);
 	color_t fuschia = rgb(255, 0, 128);
 
-	int listText = SimbleeForMobile.drawText(110, 60,  "LISTS", BLACK, 40);
-	listPurchasedButton = SimbleeForMobile.drawButton(60, 150, 200, "NEWLY PURCHASED", fuschia, BOX_TYPE);
-	listWishyWashyButton = SimbleeForMobile.drawButton(60, 200, 200, "WISHLIST", fuschia, BOX_TYPE);
-	listWineYourFavorButton = SimbleeForMobile.drawButton(60, 250, 200, "FAVORITES", fuschia, BOX_TYPE);
+	SimbleeForMobile.drawText(90, 60,  "GLASSY", BLACK, 40);
+	listBuyButton = SimbleeForMobile.drawButton(60, 150, 200, "BUY WINE", fuschia, BOX_TYPE);
+	listViewInventoryButton = SimbleeForMobile.drawButton(60, 200, 200, "VIEW INVENTORY", fuschia, BOX_TYPE);
 
-	SimbleeForMobile.setEvents(listPurchasedButton, EVENT_RELEASE);
-	SimbleeForMobile.setEvents(listWishyWashyButton, EVENT_RELEASE);
-	SimbleeForMobile.setEvents(listWineYourFavorButton, EVENT_RELEASE);
+	SimbleeForMobile.setEvents(listBuyButton, EVENT_RELEASE);
+	SimbleeForMobile.endScreen();
+}
 
+void createBottlePlacementInstructionScreen() {
+	SimbleeForMobile.beginScreen(WHITE);
+	SimbleeForMobile.drawText(43, 200,  "PLACE BOTTLE IN\n  WINE RACK", BLACK, 40);
+	SimbleeForMobile.endScreen();
+}
+
+void createBottleRemovalInstructionScreen() {
+	SimbleeForMobile.beginScreen(WHITE);
+	SimbleeForMobile.drawText(43, 200,  "REMOVE BOTTLE FROM\n  WINE RACK", BLACK, 40);
 	SimbleeForMobile.endScreen();
 }
 
@@ -91,27 +87,10 @@ void createThanksScreen() {
 	SimbleeForMobile.endScreen();
 }
 
-void createStasisScreen() {
-	color_t darkgray = rgb(85, 85, 85);
-    color_t fuschia = rgb(255, 0, 128);
-    SimbleeForMobile.beginScreen(WHITE);
-	wineTable.draw_table(100, "WINE INVENTORY");
-	SimbleeForMobile.endScreen();
-}
-
-void createAnomalyScreen() {
-	color_t darkgray = rgb(85, 85, 85);
-	color_t fuschia = rgb(255, 0, 128);
-    SimbleeForMobile.beginScreen(WHITE);
-	wineTable.draw_table(100, "NEWLY PURCHASED");
-    SimbleeForMobile.drawText(60, 120,  "PLACE BOTTLE IN RACK", BLACK, 20);
-	SimbleeForMobile.endScreen();
-}
-
 void createExtractionScreen() {
 	color_t darkgray = rgb(85, 85, 85);
 	color_t fuschia = rgb(255, 0, 128);
-    SimbleeForMobile.beginScreen(WHITE);
+	SimbleeForMobile.beginScreen(WHITE);
 
 	int extractionText = SimbleeForMobile.drawText(40, 60,  "WINE REMOVED", BLACK, 40);
 	extractionDrinkingButton = SimbleeForMobile.drawButton(100, 200, 100, "DRANK", fuschia, BOX_TYPE);
@@ -124,7 +103,7 @@ void createExtractionScreen() {
 
 void createInsertionScreen() {
 	color_t darkgray = rgb(85, 85, 85);
-    SimbleeForMobile.beginScreen(WHITE);
+	SimbleeForMobile.beginScreen(WHITE);
 	wineTable.draw_table(100, "SELECT BOTTLE");
 	SimbleeForMobile.endScreen();
 }
@@ -149,17 +128,25 @@ void printEvent(event_t &event) {
 	Serial.println(event.y);
 }
 
-void setup() {
-	Serial.begin(9600);
-	SimbleeForMobile.advertisementData = "DasChill";
-	SimbleeForMobile.begin();
-	wineTable.add_record("Los Reveles");
-	wineTable.add_record("Francis Coppola");
-	wineTable.add_record("Proximo");
-	wineTable.add_record("Perez Cruz");
-	wineTable.add_record("Baron de Marny");
-	wineTable.add_record("Prieure de Cenac");
-	Serial.println("Are we here");
+void addToInventory(uint8_t inputEventID) {
+	selectedBottle = wineTable.get_record_by_button_id(inputEventID, 'l');
+	if (selectedBottle == NULL) {
+		return;
+	}
+	selectedBottle->updateLocation(receivedLoc);
+	selectedBottle->updateState('s');
+	selectedBottle = NULL;
+}
+
+void removeFromInventory() {
+	Serial.println("Okay");
+	selectedBottle = wineTable.get_record_by_loc(receivedLoc);
+	if (selectedBottle == NULL) {
+		return;
+	}
+	selectedBottle->updateLocation(-1);
+	selectedBottle->updateState('l');
+	selectedBottle = NULL;
 }
 
 int htoi (char c) {  //does not check that input is valid
@@ -177,6 +164,19 @@ int crcBase36(char* test) {
 	return result;
 }
 
+void setup() {
+	Serial.begin(9600);
+	SimbleeForMobile.advertisementData = "DasChill";
+	SimbleeForMobile.begin();
+	wineTable.add_record("Los Reveles");
+	wineTable.add_record("Francis Coppola");
+	wineTable.add_record("Proximo");
+	wineTable.add_record("Perez Cruz");
+	wineTable.add_record("Baron de Marny");
+	wineTable.add_record("Prieure de Cenac");
+	Serial.println("Are we here");
+}
+
 void loop() {
 	if (Serial.available() > 0) {
 		Serial.readBytesUntil('\n', switchValue, 32);
@@ -191,20 +191,23 @@ void loop() {
 
 	if (SimbleeForMobile.updatable) {
 		if (switchOnOff == 1) {
-			SimbleeForMobile.showScreen(5);
+			SimbleeForMobile.showScreen(3);
 			switchOnOff = -1;
 		} else if (switchOnOff == 0) {
-			SimbleeForMobile.showScreen(4);
+			SimbleeForMobile.showScreen(6);
 			switchOnOff = -1;
 		}
+
 		if (updateTrue != 0) {
 			wineTable.update_table(updateTrue);
 			updateTrue = 0;
 		}
-		if (currentScreen == 6) {
+
+		if (currentScreen == 4 || currentScreen == 7) {
 			if ((millis() - thankYouTimer) > 2000) {
 				thankYouTimer = 0;
-				SimbleeForMobile.showScreen(1);
+				currentScreen = (currentScreen + 1) % 7;
+				SimbleeForMobile.showScreen(currentScreen);
 			}
 		}
 	}
@@ -217,31 +220,32 @@ void ui() {
 
 	currentScreen = SimbleeForMobile.screen;
 	switch (SimbleeForMobile.screen) {
-        case 1:
-            createBuyScreen();
-            break;
-            
+		case 1:
+			createBuyScreen();
+			break;
+
 		case 2:
-			createListsScreen();;
-			//createStasisScreen();
-			//updateTrue = 's';
+			createBottlePlacementInstructionScreen();
 			break;
 
 		case 3:
-			createAnomalyScreen();
-			updateTrue = 'l';
-			break;
-
-		case 4:
-			createExtractionScreen();
-			break;
-
-		case 5:
 			createInsertionScreen();
 			updateTrue = 'l';
 			break;
 		
+		case 4:
+			createThanksScreen();
+			break;
+
+		case 5:
+			createBottleRemovalInstructionScreen();
+			break;
+
 		case 6:
+			createExtractionScreen();
+			break;
+
+		case 7:
 			createThanksScreen();
 			break;
 
@@ -251,52 +255,23 @@ void ui() {
 	}
 }
 
-void addToInventory(uint8_t inputEventID) {
-	selectedBottle = wineTable.get_record_by_button_id(inputEventID, 'l');
-    if (selectedBottle == NULL) {
-        return;
-    }
-	selectedBottle->updateLocation(receivedLoc);
-	selectedBottle->updateState('s');
-	selectedBottle = NULL;
-}
-
-void removeFromInventory() {
-	Serial.println("Okay");
-	selectedBottle = wineTable.get_record_by_loc(receivedLoc);
-    if (selectedBottle == NULL) {
-        return;
-    }
-	selectedBottle->updateLocation(-1);
-	selectedBottle->updateState('l');
-	selectedBottle = NULL;
-}
-
 void ui_event(event_t &event) {
 	eventID = event.id;
 
 	printEvent(event);
-	if (eventID == listPurchasedButton && event.type == EVENT_RELEASE && currentScreen == 2) {
+
+	if (eventID == listBuyButton && event.type == EVENT_RELEASE && currentScreen == 1) {
+		SimbleeForMobile.showScreen(2);
+	} else if (eventID == listPurchasedButton && event.type == EVENT_RELEASE && currentScreen == 2) {
 		SimbleeForMobile.showScreen(3);
-	} else if (eventID == listBuyButton && event.type == EVENT_RELEASE && currentScreen == 1) {
-	    SimbleeForMobile.showScreen(2);
-	} else if (wineTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 5) {
+	} else if (wineTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 3) {
 		addToInventory(eventID);
-		SimbleeForMobile.showScreen(6);
-	} else if (eventID == extractionDrinkingButton && event.type == EVENT_RELEASE && currentScreen == 4) {
+		SimbleeForMobile.showScreen(4);
+	} else if (eventID == extractionDrinkingButton && event.type == EVENT_RELEASE && currentScreen == 6) {
 		removeFromInventory();
-		SimbleeForMobile.showScreen(6);
-	} else if (eventID == extractionRecyclingButton && event.type == EVENT_RELEASE && currentScreen == 4) {
+		SimbleeForMobile.showScreen(7);
+	} else if (eventID == extractionRecyclingButton && event.type == EVENT_RELEASE && currentScreen == 6) {
 		removeFromInventory();
-		SimbleeForMobile.showScreen(6);
+		SimbleeForMobile.showScreen(7);
 	}
-
-	//  if (stasisTable.find_button_id(eventID)) {
-	//    SimbleeForMobile.updateText(eventID, "CLICKED");
-	//  //	SimbleeForMobile.showScreen(2);
-	//  }
-
-	//  if (stasisTable.find_label_id(eventID)) {
-	//    SimbleeForMobile.updateText(eventID, "CLICKED");
-	//  }
 }
