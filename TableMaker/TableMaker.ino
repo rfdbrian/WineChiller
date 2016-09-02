@@ -38,6 +38,7 @@ uint8_t extractionRecyclingButton;
 uint8_t listPurchasedButton;
 uint8_t listBuyButton;
 uint8_t listViewInventoryButton;
+uint8_t returnToTitleScreenButton;
 
 std::map<uint8_t, uint8_t> resetButtons;
 
@@ -73,6 +74,7 @@ void createBuyScreen() {
     createResetButton();
 
 	SimbleeForMobile.setEvents(listBuyButton, EVENT_RELEASE);
+    SimbleeForMobile.setEvents(listViewInventoryButton, EVENT_RELEASE);
 	SimbleeForMobile.endScreen();
 }
 
@@ -99,7 +101,6 @@ void createThanksScreen() {
 }
 
 void createExtractionScreen() {
-	color_t darkgray = rgb(85, 85, 85);
 	color_t fuschia = rgb(255, 0, 128);
 	SimbleeForMobile.beginScreen(WHITE);
 
@@ -114,10 +115,19 @@ void createExtractionScreen() {
 }
 
 void createInsertionScreen() {
-	color_t darkgray = rgb(85, 85, 85);
 	SimbleeForMobile.beginScreen(WHITE);
 	wineTable.draw_table(100, "SELECT BOTTLE");
     createResetButton();
+	SimbleeForMobile.endScreen();
+}
+
+void createInventoryScreen() {
+    color_t fuschia = rgb(255, 0, 128);
+	SimbleeForMobile.beginScreen(WHITE);
+	wineTable.draw_table(100, "WINE INVENTORY");
+	returnToTitleScreenButton = SimbleeForMobile.drawButton(10, 100, 100, "MAIN", fuschia, BOX_TYPE);
+    createResetButton();
+    SimbleeForMobile.setEvents(returnToTitleScreenButton, EVENT_RELEASE);
 	SimbleeForMobile.endScreen();
 }
 
@@ -266,6 +276,11 @@ void ui() {
 			createThanksScreen();
 			break;
 
+		case 8:
+			createInventoryScreen();
+			updateTrue = 's';
+			break;
+
 		default:
 			Serial.print("ui: Unknown screen requested: ");
 			Serial.println(SimbleeForMobile.screen);
@@ -293,7 +308,11 @@ void ui_event(event_t &event) {
 		removeFromInventory();
 		SimbleeForMobile.showScreen(7);
 	} else if (resetButtons.find(currentScreen)->second == eventID && event.type == EVENT_RELEASE) {
-        resetDemo();
-        SimbleeForMobile.showScreen(1);
+    resetDemo();
+    SimbleeForMobile.showScreen(1);
+	} else if (eventID == listViewInventoryButton && event.type == EVENT_RELEASE && currentScreen == 1) {
+		SimbleeForMobile.showScreen(8);
+	}	else if (eventID == returnToTitleScreenButton && event.type == EVENT_RELEASE && currentScreen == 8) {
+		SimbleeForMobile.showScreen(1);
 	}
 }
