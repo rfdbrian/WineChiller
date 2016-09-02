@@ -56,13 +56,21 @@ void SimbleeForMobile_onDisconnect() {
 	receivedLoc = -1;
 }
 
+void createResetButton() {
+    color_t fuschia = rgb(255, 0, 128);
+    uint8_t buyScreenResetButton = SimbleeForMobile.drawButton(PERM_X - 105, PERM_Y - 30, 100, "RESET DEMO", fuschia, TEXT_TYPE);
+    SimbleeForMobile.setEvents(buyScreenResetButton, EVENT_RELEASE);
+    resetButtons[currentScreen] = buyScreenResetButton;
+}
+
 void createBuyScreen() {
 	SimbleeForMobile.beginScreen(WHITE);
 	color_t fuschia = rgb(255, 0, 128);
 
-	SimbleeForMobile.drawText(90, 60,  "GLASSY", BLACK, 40);
+	SimbleeForMobile.drawText(100, 60,  "GLASSY", BLACK, 40);
 	listBuyButton = SimbleeForMobile.drawButton(60, 150, 200, "BUY WINE", fuschia, BOX_TYPE);
 	listViewInventoryButton = SimbleeForMobile.drawButton(60, 200, 200, "VIEW INVENTORY", fuschia, BOX_TYPE);
+    createResetButton();
 
 	SimbleeForMobile.setEvents(listBuyButton, EVENT_RELEASE);
 	SimbleeForMobile.endScreen();
@@ -70,20 +78,23 @@ void createBuyScreen() {
 
 void createBottlePlacementInstructionScreen() {
 	SimbleeForMobile.beginScreen(WHITE);
-	SimbleeForMobile.drawText(43, 200,  "PLACE BOTTLE IN\n  WINE RACK", BLACK, 40);
+	SimbleeForMobile.drawText(35, 200,  "PLACE BOTTLE\n IN WINE RACK", BLACK, 40);
+    createResetButton();
 	SimbleeForMobile.endScreen();
 }
 
 void createBottleRemovalInstructionScreen() {
 	SimbleeForMobile.beginScreen(WHITE);
-	SimbleeForMobile.drawText(43, 200,  "REMOVE BOTTLE FROM\n  WINE RACK", BLACK, 40);
+	SimbleeForMobile.drawText(25, 160,  "REMOVE BOTTLE\n     FROM WINE\n           RACK", BLACK, 40);
+    createResetButton();
 	SimbleeForMobile.endScreen();
 }
 
 void createThanksScreen() {
 	SimbleeForMobile.beginScreen(WHITE);
-	int listText = SimbleeForMobile.drawText(43, 200,  "THANK YOU!!", BLACK, 40);
+	int listText = SimbleeForMobile.drawText(50, 200,  "THANK YOU!!", BLACK, 40);
 	thankYouTimer = millis();
+    createResetButton();
 	SimbleeForMobile.endScreen();
 }
 
@@ -92,12 +103,13 @@ void createExtractionScreen() {
 	color_t fuschia = rgb(255, 0, 128);
 	SimbleeForMobile.beginScreen(WHITE);
 
-	int extractionText = SimbleeForMobile.drawText(40, 60,  "WINE REMOVED", BLACK, 40);
-	extractionDrinkingButton = SimbleeForMobile.drawButton(100, 200, 100, "DRANK", fuschia, BOX_TYPE);
-	extractionRecyclingButton = SimbleeForMobile.drawButton(100, 250, 100, "GIFTED", fuschia, BOX_TYPE);
+	int extractionText = SimbleeForMobile.drawText(30, 90,  "WINE REMOVED", BLACK, 40);
+	extractionDrinkingButton = SimbleeForMobile.drawButton(110, 200, 100, "DRANK", fuschia, BOX_TYPE);
+	extractionRecyclingButton = SimbleeForMobile.drawButton(110, 250, 100, "GIFTED", fuschia, BOX_TYPE);
 
 	SimbleeForMobile.setEvents(extractionDrinkingButton, EVENT_RELEASE);
 	SimbleeForMobile.setEvents(extractionRecyclingButton, EVENT_RELEASE);
+    createResetButton();
 	SimbleeForMobile.endScreen();
 }
 
@@ -105,6 +117,7 @@ void createInsertionScreen() {
 	color_t darkgray = rgb(85, 85, 85);
 	SimbleeForMobile.beginScreen(WHITE);
 	wineTable.draw_table(100, "SELECT BOTTLE");
+    createResetButton();
 	SimbleeForMobile.endScreen();
 }
 
@@ -164,6 +177,10 @@ int crcBase36(char* test) {
 	return result;
 }
 
+void resetDemo() {
+    wineTable.resetRowsTo('l');
+}
+
 void setup() {
 	Serial.begin(9600);
 	SimbleeForMobile.advertisementData = "DasChill";
@@ -181,7 +198,7 @@ void loop() {
 	if (Serial.available() > 0) {
 		Serial.readBytesUntil('\n', switchValue, 32);
 		char test[8];
-		sscanf(switchValue, "%2s:%d", test, &switchOnOff);
+		sscanf(switchValue, "%2s:%1d", test, &switchOnOff);
 		receivedLoc = crcBase36(test);
 		Serial.print("Location: ");
 		Serial.println(String(receivedLoc, 36));
@@ -206,8 +223,8 @@ void loop() {
 		if (currentScreen == 4 || currentScreen == 7) {
 			if ((millis() - thankYouTimer) > 2000) {
 				thankYouTimer = 0;
-				currentScreen = (currentScreen + 1) % 7;
-				SimbleeForMobile.showScreen(currentScreen);
+				int test = (currentScreen + 1) % 7;
+				SimbleeForMobile.showScreen(test);
 			}
 		}
 	}
@@ -260,6 +277,8 @@ void ui_event(event_t &event) {
 
 	printEvent(event);
 
+//    std::map<uint8_t, uint8_t>::iterator buttonID_it = resetButtons.begin();
+
 	if (eventID == listBuyButton && event.type == EVENT_RELEASE && currentScreen == 1) {
 		SimbleeForMobile.showScreen(2);
 	} else if (eventID == listPurchasedButton && event.type == EVENT_RELEASE && currentScreen == 2) {
@@ -273,5 +292,8 @@ void ui_event(event_t &event) {
 	} else if (eventID == extractionRecyclingButton && event.type == EVENT_RELEASE && currentScreen == 6) {
 		removeFromInventory();
 		SimbleeForMobile.showScreen(7);
+	} else if (resetButtons.find(currentScreen)->second == eventID && event.type == EVENT_RELEASE) {
+        resetDemo();
+        SimbleeForMobile.showScreen(1);
 	}
 }

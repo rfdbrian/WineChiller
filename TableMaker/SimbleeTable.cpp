@@ -82,6 +82,15 @@ bool SimbleeTable::find_label_id(uint8_t searchValue) {
 	return false;
 }
 
+void SimbleeTable::resetRowsTo(char desiredState) {
+    vector<Record>::iterator recordIter = rows.begin();
+    for (recordIter; recordIter != rows.end(); ++recordIter) {
+        recordIter->updateState(desiredState);
+        recordIter->updateLocation(-1);
+    }
+}
+
+
 /**
 	A table is a collection of records. Columns added by need.
 	*/
@@ -93,9 +102,7 @@ void SimbleeTable::draw_table(uint16_t startHeight, const char* screenTitle) {
 	// 	throw std::out_of_range("Number of rows exceed screenHeight");
 	// }
 
-	uint16_t PERM_X = SimbleeForMobile.screenWidth;
-	uint16_t PERM_Y = SimbleeForMobile.screenHeight;
-
+	
 	SimbleeForMobile.drawText(PERM_X / 2 - 100, 50, screenTitle, BLACK, 30);
 //	draw_slider(5, startHeight, PERM_X - 10, 0, 10);
 

@@ -10,7 +10,8 @@
 #include <cassert>
 
 #define vector std::vector
-
+#define PERM_X SimbleeForMobile.screenWidth
+#define PERM_Y SimbleeForMobile.screenHeight
 
 class SimbleeTable {
 	private:
@@ -43,10 +44,12 @@ class SimbleeTable {
 		bool find_button_id(uint8_t buttonID);
 		bool find_label_id(uint8_t buttonID);
 
+        void resetRowsTo(char desiredState);
+
 		//void update_button_ids_vector(std::map<int,int> newButtonVector);
 		//void update_label_ids_vector(std::map<int,int> newLabelVector);
 
-		void content_double_thinK(int shiftVal);
+//		void content_double_thinK(int shiftVal);
 
 		//std::map<int,int> get_button_ids_vector();
 		//std::map<int,int> get_label_ids_vector();
