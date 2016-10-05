@@ -15,7 +15,9 @@ Record* SimbleeTable::get_record_by_loc(int crcBase36) {
 		if (it->getWineLocation() == crcBase36) {
 			// &(*..) Dereferences iterator to reference directly the object.
 			ptrToSelRecord = &(*it);
+#ifdef DEBUG
 			Serial.println("RECORD FOUND BY LOC");
+#endif
 			break;
 		}
 	}
@@ -35,7 +37,9 @@ Record* SimbleeTable::get_record_by_button_id(uint8_t inputID, char desiredChar)
 		if (it->getButtonID() == inputID) {
 			// &(*..) Dereferences iterator to reference directly the object.
 			ptrToSelRecord = &(*it);
+#ifdef DEBUG
 			Serial.println("RECORD FOUND BY BUTTON ID");
+#endif            
 			break;
 		}
 	}
@@ -55,7 +59,9 @@ void SimbleeTable::del_record(cString wineName) {
 	for (vector<Record>::iterator it = rows.begin(); it != rows.end(); ++it) {
 		if (it->getWineName().compare(wineName) == 0) {
 			rows.erase(it);
+#ifdef DEBUG         
 			Serial.println("Deleted");
+#endif          
 			break;
 		}
 	}
@@ -135,17 +141,21 @@ void	SimbleeTable::update_table(char desiredChar) {
 		}
 
 		SimbleeForMobile.updateText(it->getButtonID(), wineName.c_str());
+#ifdef DEBUG       
 		Serial.print("WineName: ");
 		Serial.print(wineName.c_str());
 		Serial.print(" ---- ButtonID: ");
 		Serial.println(it->getButtonID());
+#endif      
 		SimbleeForMobile.updateText(it->getLabelID(), tempCharArray.c_str());
+#ifdef DEBUG       
 		Serial.print("Label ID: ");
 		Serial.print(tempCharArray.c_str());
 		Serial.print(" ---- Label Value: ");
 		Serial.println(it->getLabelID());
 
 		Serial.println("\n");
+#endif       
 	}
 }
 
@@ -212,7 +222,9 @@ void SimbleeTable::update_rows_to_screen(char desiredState) {
 		labelIDIter->second = newRecord->getWineLocation();
 		++labelIDIter;
 
+#ifdef DEBUG
         Serial.print("This is where this should be updated...\t");
         Serial.println(newRecord->getButtonID());
+#endif
 	}
 }

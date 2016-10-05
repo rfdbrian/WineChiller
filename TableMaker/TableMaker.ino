@@ -29,6 +29,7 @@ char switchValue[64];
 int receivedLoc = -1;
 int switchOnOff = -1;
 vector<Record> removedBottles;
+cString wineBottleToBeRemoved;
 
 //  Extraction Screen Buttons
 uint8_t extractionDrinkingButton;
@@ -55,6 +56,28 @@ void SimbleeForMobile_onDisconnect() {
 	currentScreen  = -1;
 	switchOnOff = -1;
 	receivedLoc = -1;
+    Serial.println(18);
+}
+
+void addToInventory(uint8_t inputEventID) {
+    selectedBottle = wineTable.get_record_by_button_id(inputEventID, 'l');
+    if (selectedBottle == NULL) {
+        return;
+    }
+    selectedBottle->updateLocation(receivedLoc);
+    selectedBottle->updateState('s');
+    selectedBottle = NULL;
+}
+
+void removeFromInventory() {
+    selectedBottle = wineTable.get_record_by_loc(receivedLoc);
+    if (selectedBottle == NULL) {
+        return;
+    }
+    wineBottleToBeRemoved = selectedBottle->getWineName();
+    selectedBottle->updateLocation(-1);
+    selectedBottle->updateState('l');
+    selectedBottle = NULL;
 }
 
 void createResetButton() {
@@ -69,7 +92,7 @@ void createBuyScreen() {
 	color_t fuschia = rgb(255, 0, 128);
 
 	SimbleeForMobile.drawText(100, 60,  "GLASSY", BLACK, 40);
-	listBuyButton = SimbleeForMobile.drawButton(60, 150, 200, "BUY WINE", fuschia, BOX_TYPE);
+	listBuyButton = SimbleeForMobile.drawButton(60, 150, 200, "ADD TO INVENTORY", fuschia, BOX_TYPE);
 	listViewInventoryButton = SimbleeForMobile.drawButton(60, 200, 200, "VIEW INVENTORY", fuschia, BOX_TYPE);
     createResetButton();
 
@@ -104,13 +127,18 @@ void createExtractionScreen() {
 	color_t fuschia = rgb(255, 0, 128);
 	SimbleeForMobile.beginScreen(WHITE);
 
+    removeFromInventory();
+     
 	int extractionText = SimbleeForMobile.drawText(30, 90,  "WINE REMOVED", BLACK, 40);
+	int wineRemovedText = SimbleeForMobile.drawText(40, 140, wineBottleToBeRemoved.c_str(), BLACK, 40);
+
 	extractionDrinkingButton = SimbleeForMobile.drawButton(110, 200, 100, "DRANK", fuschia, BOX_TYPE);
 	extractionRecyclingButton = SimbleeForMobile.drawButton(110, 250, 100, "GIFTED", fuschia, BOX_TYPE);
 
 	SimbleeForMobile.setEvents(extractionDrinkingButton, EVENT_RELEASE);
 	SimbleeForMobile.setEvents(extractionRecyclingButton, EVENT_RELEASE);
-    createResetButton();
+  createResetButton();
+  wineBottleToBeRemoved = "";
 	SimbleeForMobile.endScreen();
 }
 
@@ -151,26 +179,7 @@ void printEvent(event_t &event) {
 	Serial.println(event.y);
 }
 
-void addToInventory(uint8_t inputEventID) {
-	selectedBottle = wineTable.get_record_by_button_id(inputEventID, 'l');
-	if (selectedBottle == NULL) {
-		return;
-	}
-	selectedBottle->updateLocation(receivedLoc);
-	selectedBottle->updateState('s');
-	selectedBottle = NULL;
-}
 
-void removeFromInventory() {
-	Serial.println("Okay");
-	selectedBottle = wineTable.get_record_by_loc(receivedLoc);
-	if (selectedBottle == NULL) {
-		return;
-	}
-	selectedBottle->updateLocation(-1);
-	selectedBottle->updateState('l');
-	selectedBottle = NULL;
-}
 
 int htoi (char c) {  //does not check that input is valid
 	if (c >= '0' && c<='9')
@@ -201,7 +210,6 @@ void setup() {
 	wineTable.add_record("Perez Cruz");
 	wineTable.add_record("Baron de Marny");
 	wineTable.add_record("Prieure de Cenac");
-	Serial.println("Are we here");
 }
 
 void loop() {
@@ -210,10 +218,12 @@ void loop() {
 		char test[8];
 		sscanf(switchValue, "%2s:%1d", test, &switchOnOff);
 		receivedLoc = crcBase36(test);
+#ifdef DEBUG
 		Serial.print("Location: ");
 		Serial.println(String(receivedLoc, 36));
 		Serial.print("Switch state: ");
 		Serial.println(switchOnOff);
+#endif        
 	}
 
 	if (SimbleeForMobile.updatable) {
@@ -233,8 +243,7 @@ void loop() {
 		if (currentScreen == 4 || currentScreen == 7) {
 			if ((millis() - thankYouTimer) > 2000) {
 				thankYouTimer = 0;
-				int test = (currentScreen + 1) % 7;
-				SimbleeForMobile.showScreen(test);
+				SimbleeForMobile.showScreen(1);
 			}
 		}
 	}
@@ -246,13 +255,18 @@ void ui() {
 	if (SimbleeForMobile.screen == currentScreen) return;
 
 	currentScreen = SimbleeForMobile.screen;
+
+	//	18, 21, and 42 refer to the IDs of "Store, Add, and Remove"
+	//		storyboard web pages.
 	switch (SimbleeForMobile.screen) {
 		case 1:
 			createBuyScreen();
+			Serial.println(18);
 			break;
 
 		case 2:
 			createBottlePlacementInstructionScreen();
+			Serial.println(21);
 			break;
 
 		case 3:
@@ -263,9 +277,9 @@ void ui() {
 		case 4:
 			createThanksScreen();
 			break;
-
 		case 5:
 			createBottleRemovalInstructionScreen();
+			Serial.println(42);
 			break;
 
 		case 6:
@@ -282,15 +296,20 @@ void ui() {
 			break;
 
 		default:
+#ifdef DEBUG        
 			Serial.print("ui: Unknown screen requested: ");
 			Serial.println(SimbleeForMobile.screen);
+#endif      
+            break;
 	}
 }
 
 void ui_event(event_t &event) {
 	eventID = event.id;
 
+#ifdef DEBUG
 	printEvent(event);
+#endif  
 
 //    std::map<uint8_t, uint8_t>::iterator buttonID_it = resetButtons.begin();
 
@@ -302,14 +321,12 @@ void ui_event(event_t &event) {
 		addToInventory(eventID);
 		SimbleeForMobile.showScreen(4);
 	} else if (eventID == extractionDrinkingButton && event.type == EVENT_RELEASE && currentScreen == 6) {
-		removeFromInventory();
 		SimbleeForMobile.showScreen(7);
 	} else if (eventID == extractionRecyclingButton && event.type == EVENT_RELEASE && currentScreen == 6) {
-		removeFromInventory();
 		SimbleeForMobile.showScreen(7);
 	} else if (resetButtons.find(currentScreen)->second == eventID && event.type == EVENT_RELEASE) {
-    resetDemo();
-    SimbleeForMobile.showScreen(1);
+		resetDemo();
+		SimbleeForMobile.showScreen(1);
 	} else if (eventID == listViewInventoryButton && event.type == EVENT_RELEASE && currentScreen == 1) {
 		SimbleeForMobile.showScreen(8);
 	}	else if (eventID == returnToTitleScreenButton && event.type == EVENT_RELEASE && currentScreen == 8) {
