@@ -1,3 +1,5 @@
+
+
 /*
 	 Copyright (c) 2016 RF Digital Corp. All Rights Reserved.
 
@@ -16,9 +18,42 @@ This heading must NOT be removed from this file.
 /*
 	 Table of values is drawn and updated on Simblee
  */
+ 
+#include <dmx.h>
+#include <fastpin.h>
+#include <fastspi.h>
+#include <cpp_compat.h>
+#include <pixeltypes.h>
+#include <colorutils.h>
+#include <chipsets.h>
+#include <noise.h>
+#include <colorpalettes.h>
+#include <fastled_progmem.h>
+#include <led_sysdefs.h>
+#include <lib8tion.h>
+#include <bitswap.h>
+#include <hsv2rgb.h>
+#include <fastspi_types.h>
+#include <fastled_config.h>
+#include <fastspi_dma.h>
+#include <controller.h>
+#include <color.h>
+#include <pixelset.h>
+#include <platforms.h>
+#include <fastled_delay.h>
+#include <fastspi_nop.h>
+#include <fastspi_bitbang.h>
+#include <fastspi_ref.h>
+#include <FastLED.h>
+#include <power_mgt.h>
 
 #include "SimbleeTable.h"
 #include <stdlib.h>
+
+#define LED_PIN 6
+#define NUM_LEDS 6
+
+CRGB leds[NUM_LEDS];
 
 uint8_t eventID;
 int currentScreen;
@@ -179,8 +214,6 @@ void printEvent(event_t &event) {
 	Serial.println(event.y);
 }
 
-
-
 int htoi (char c) {  //does not check that input is valid
 	if (c >= '0' && c<='9')
 		return c-'0';
@@ -202,6 +235,8 @@ void resetDemo() {
 
 void setup() {
 	Serial.begin(9600);
+
+  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 	SimbleeForMobile.advertisementData = "DasChill";
 	SimbleeForMobile.begin();
 	wineTable.add_record("Los Reveles");
@@ -213,18 +248,30 @@ void setup() {
 }
 
 void loop() {
-	if (Serial.available() > 0) {
-		Serial.readBytesUntil('\n', switchValue, 32);
-		char test[8];
-		sscanf(switchValue, "%2s:%1d", test, &switchOnOff);
-		receivedLoc = crcBase36(test);
-#ifdef DEBUG
-		Serial.print("Location: ");
-		Serial.println(String(receivedLoc, 36));
-		Serial.print("Switch state: ");
-		Serial.println(switchOnOff);
-#endif        
-	}
+  if (true) {
+    int lumens = scale16(beat16(LED_SPEED) - against, BRIGHT_LIM );
+    lumens = BRIGHT_LIM - lumens;
+    FastLED.setBrightness(lumens);
+  }
+
+  // If swtich is activated....
+  //  insert code here
+  //  Change light too... 
+  //  Add FASTLED changing at end of loop.
+
+
+//	if (Serial.available() > 0) {
+//		Serial.readBytesUntil('\n', switchValue, 32);
+//		char test[8];
+//		sscanf(switchValue, "%2s:%1d", test, &switchOnOff);
+//		receivedLoc = crcBase36(test);
+//#ifdef DEBUG
+//		Serial.print("Location: ");
+//		Serial.println(String(receivedLoc, 36));
+//		Serial.print("Switch state: ");
+//		Serial.println(switchOnOff);
+//#endif        
+//	}
 
 	if (SimbleeForMobile.updatable) {
 		if (switchOnOff == 1) {
