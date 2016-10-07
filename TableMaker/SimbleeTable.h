@@ -38,7 +38,7 @@ class SimbleeTable {
 		void update_table(char desiredState); // More info found in definition
 
 		Record* get_record_by_loc(int crcBase36);
-		Record* get_record_by_button_id(uint8_t inputID, char currScreen);
+		Record* get_record_by_button_id(uint8_t& inputID, char currScreen);
 		void add_record(cString wineName);
 		void del_record(cString wineName);
 

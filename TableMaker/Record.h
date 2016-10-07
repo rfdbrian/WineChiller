@@ -31,7 +31,6 @@ class Record {
 		int getButtonID();
 		int	getLabelID();
 		char getState();
-		
 };
 
 #endif

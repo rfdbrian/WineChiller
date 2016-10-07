@@ -103,11 +103,12 @@ void loop() {
     leds[0] = CRGB::Black;
   }  
 
-  for (std::vector<RBD::Timer>::iterator it = timerList.begin(); it != timerList.end(); ++it) {
-    if ((*it).onExpired()) {
-      Serial.println("Test");
-    }
-  }
+  //  Failed to work... Maybe has something to do with the instantanous availablility of "onExpired" but it might not be called since the for loop has already read past thta element in the vector.
+  //for (std::vector<RBD::Timer>::iterator it = timerList.begin(); it != timerList.end(); ++it) {
+  //  if ((*it).onExpired()) {
+  //    Serial.println("Test");
+  //  }
+  //}
 
   int lumens = quadwave8(beat8(72));
   FastLED.setBrightness(lumens);

@@ -1,24 +1,10 @@
+#include <RBD_Button.h>
+#include <RBD_Timer.h>
+#include "SimbleeTable.h"
+#include <stdlib.h>
+//#include <vector>
 
 
-/*
-	 Copyright (c) 2016 RF Digital Corp. All Rights Reserved.
-
-	 The source code contained in this file and all intellectual property embodied in
-	 or covering the source code is the property of RF Digital Corp. or its licensors.
-	 Your right to use this source code and intellectual property is non-transferable,
-	 non-sub licensable, revocable, and subject to terms and conditions of the
-	 SIMBLEE SOFTWARE LICENSE AGREEMENT.
-http://www.simblee.com/licenses/SimbleeSoftwareLicenseAgreement.txt
-
-THE SOURCE CODE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
-
-This heading must NOT be removed from this file.
- */
-
-/*
-	 Table of values is drawn and updated on Simblee
- */
- 
 #include <dmx.h>
 #include <fastpin.h>
 #include <fastspi.h>
@@ -47,22 +33,28 @@ This heading must NOT be removed from this file.
 #include <FastLED.h>
 #include <power_mgt.h>
 
-#include "SimbleeTable.h"
-#include <stdlib.h>
 
-#define LED_PIN 6
+#define LED_PIN 5
 #define NUM_LEDS 6
+#define SW1 2
+#define SW2 3
+#define SW3 4
+#define SW4 7
+#define SW5 8
+#define SW6 9
+#define color CRGB::Purple
+#define INSERT_TIMER_VALUE 3000
+#define FIND_BOT 15000
 
-CRGB leds[NUM_LEDS];
+std::map<String, int> MatrixPos;
 
 uint8_t eventID;
 int currentScreen;
 Record* selectedBottle;
 char updateTrue = 0;
 
-char switchValue[64];
+String switchValue = "";
 int receivedLoc = -1;
-int switchOnOff = -1;
 vector<Record> removedBottles;
 cString wineBottleToBeRemoved;
 
@@ -83,15 +75,29 @@ unsigned long thankYouTimer;
 
 SimbleeTable wineTable = SimbleeTable();
 
+CRGB leds[NUM_LEDS];
+
+RBD::Button button1(SW1, true);
+RBD::Button button2(SW2, true);
+RBD::Button button3(SW3, true);
+RBD::Button button4(SW4, true);
+RBD::Button button5(SW5, true);
+RBD::Button button6(SW6, true);
+
+RBD::Timer button1Timer(INSERT_TIMER_VALUE);
+RBD::Timer button2Timer(INSERT_TIMER_VALUE);
+RBD::Timer button3Timer(INSERT_TIMER_VALUE);
+RBD::Timer button4Timer(INSERT_TIMER_VALUE);
+RBD::Timer button5Timer(INSERT_TIMER_VALUE);
+RBD::Timer button6Timer(INSERT_TIMER_VALUE);
+
 void SimbleeForMobile_onConnect() {
 	currentScreen = -1;
 }
 
 void SimbleeForMobile_onDisconnect() {
 	currentScreen  = -1;
-	switchOnOff = -1;
-	receivedLoc = -1;
-    Serial.println(18);
+  Serial.println(18);
 }
 
 void addToInventory(uint8_t inputEventID) {
@@ -185,12 +191,12 @@ void createInsertionScreen() {
 }
 
 void createInventoryScreen() {
-    color_t fuschia = rgb(255, 0, 128);
+  color_t fuschia = rgb(255, 0, 128);
 	SimbleeForMobile.beginScreen(WHITE);
 	wineTable.draw_table(100, "WINE INVENTORY");
 	returnToTitleScreenButton = SimbleeForMobile.drawButton(10, 100, 100, "MAIN", fuschia, BOX_TYPE);
-    createResetButton();
-    SimbleeForMobile.setEvents(returnToTitleScreenButton, EVENT_RELEASE);
+  createResetButton();
+  SimbleeForMobile.setEvents(returnToTitleScreenButton, EVENT_RELEASE);
 	SimbleeForMobile.endScreen();
 }
 
@@ -224,7 +230,7 @@ int htoi (char c) {  //does not check that input is valid
 	return 0;
 }
 
-int crcBase36(char* test) {
+int crcBase36(const String test) {
 	int result = htoi(test[0]) * 36 + htoi(test[1]);
 	return result;
 }
@@ -233,12 +239,48 @@ void resetDemo() {
     wineTable.resetRowsTo('l');
 }
 
+void checkButtonState(RBD::Button& toButton, RBD::Timer& toTimer, CRGB& someLED, int cellID) {
+  if (toButton.onPressed()) {
+    Serial.println("Button2 Pressed");
+    someLED = color;
+    toTimer.restart();
+	SimbleeForMobile.showScreen(3);
+//    receivedLoc = crcBase36(MatrixPos[cellID]);
+
+    std::map<String, int>::iterator it;
+
+    for (it = MatrixPos.begin(); it != MatrixPos.end(); ++it ) {
+        if (it->second == cellID) {
+            receivedLoc = crcBase36(it->first);
+            break;
+        }
+    }
+
+    if (it == MatrixPos.end()) {
+        receivedLoc = 0;
+    }
+   
+    
+  } else if (toButton.onReleased()) {
+	SimbleeForMobile.showScreen(6);
+  } else if (toTimer.onExpired()) {
+    someLED = CRGB::Black;
+    toTimer.setTimeout(INSERT_TIMER_VALUE);
+  }
+}
+ 
 void setup() {
 	Serial.begin(9600);
+  FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
 
-  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-	SimbleeForMobile.advertisementData = "DasChill";
+	SimbleeForMobile.advertisementData = "WineChiller";
 	SimbleeForMobile.begin();
+    MatrixPos["a1"] = 0;
+    MatrixPos["a2"] = 1;
+    MatrixPos["a3"] = 2;
+    MatrixPos["b1"] = 3;
+    MatrixPos["b2"] = 4;
+    MatrixPos["b3"] = 5;
 	wineTable.add_record("Los Reveles");
 	wineTable.add_record("Francis Coppola");
 	wineTable.add_record("Proximo");
@@ -248,17 +290,13 @@ void setup() {
 }
 
 void loop() {
-  if (true) {
-    int lumens = scale16(beat16(LED_SPEED) - against, BRIGHT_LIM );
-    lumens = BRIGHT_LIM - lumens;
-    FastLED.setBrightness(lumens);
-  }
 
-  // If swtich is activated....
-  //  insert code here
-  //  Change light too... 
-  //  Add FASTLED changing at end of loop.
-
+  checkButtonState(button1, button1Timer, leds[3], 0);
+  checkButtonState(button2, button2Timer, leds[4], 1);
+  checkButtonState(button3, button3Timer, leds[5], 2);
+  checkButtonState(button4, button4Timer, leds[2], 3);
+  checkButtonState(button5, button5Timer, leds[1], 4);
+  checkButtonState(button6, button6Timer, leds[0], 5);
 
 //	if (Serial.available() > 0) {
 //		Serial.readBytesUntil('\n', switchValue, 32);
@@ -274,14 +312,6 @@ void loop() {
 //	}
 
 	if (SimbleeForMobile.updatable) {
-		if (switchOnOff == 1) {
-			SimbleeForMobile.showScreen(3);
-			switchOnOff = -1;
-		} else if (switchOnOff == 0) {
-			SimbleeForMobile.showScreen(6);
-			switchOnOff = -1;
-		}
-
 		if (updateTrue != 0) {
 			wineTable.update_table(updateTrue);
 			updateTrue = 0;
@@ -295,7 +325,60 @@ void loop() {
 		}
 	}
 
+
+  int lumens = quadwave8(beat8(72));
+  FastLED.setBrightness(lumens);
+  FastLED.show();
 	SimbleeForMobile.process();
+}
+
+void toggleSearchLight(String& targLocWine) {
+ // using std::find with vector and iterator:  
+    int value = MatrixPos[targLocWine];
+    switch (value) {
+      case 0: 
+        leds[3] = color;
+        button1Timer.setTimeout(FIND_BOT);     
+        button1Timer.restart();
+        break;
+
+      case 1: 
+        leds[4] = color;
+        button2Timer.setTimeout(FIND_BOT);     
+        button2Timer.restart();
+        break;
+
+      case 2: 
+        leds[5] = color;
+        button3Timer.setTimeout(FIND_BOT);     
+        button3Timer.restart();
+        break;
+
+      case 3: 
+        leds[2] = color;
+        button4Timer.setTimeout(FIND_BOT);     
+        button4Timer.restart();
+        break;
+
+      case 4: 
+        leds[1] = color;
+        button5Timer.setTimeout(FIND_BOT);     
+        button5Timer.restart();
+        break;
+
+      case 5: 
+        leds[0] = color;
+        button6Timer.setTimeout(FIND_BOT);     
+        button6Timer.restart();
+        break;
+
+      default:
+        Serial.println("Sorry....");
+        break;
+    }
+
+  
+    
 }
 
 void ui() {
@@ -378,5 +461,10 @@ void ui_event(event_t &event) {
 		SimbleeForMobile.showScreen(8);
 	}	else if (eventID == returnToTitleScreenButton && event.type == EVENT_RELEASE && currentScreen == 8) {
 		SimbleeForMobile.showScreen(1);
-	}
+	} else if (wineTable.find_button_id(eventID) && event.type == EVENT_RELEASE && currentScreen == 8) {
+        selectedBottle = wineTable.get_record_by_button_id(eventID, 's');
+        String ohplease = String(selectedBottle->getWineLocation(), 36);
+        Serial.println(ohplease);
+        toggleSearchLight(ohplease);
+  }
 }

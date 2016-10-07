@@ -28,7 +28,7 @@ Record* SimbleeTable::get_record_by_loc(int crcBase36) {
 	return ptrToSelRecord;
 }
 
-Record* SimbleeTable::get_record_by_button_id(uint8_t inputID, char desiredChar) {
+Record* SimbleeTable::get_record_by_button_id(uint8_t& inputID, char desiredChar) {
 	Record* ptrToSelRecord = NULL;
 	for (vector<Record>::iterator it  = rows.begin() ; it != rows.end(); ++it) {
         if (it->getState() != desiredChar) {
