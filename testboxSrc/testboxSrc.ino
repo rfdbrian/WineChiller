@@ -1,5 +1,3 @@
-#include <RBD_Button.h>
-#include <RBD_Timer.h>
 #include <dmx.h>
 #include <fastpin.h>
 #include <fastspi.h>
@@ -28,35 +26,45 @@
 #include <FastLED.h>
 #include <power_mgt.h>
 
+#include <RBD_Timer.h>
+
+#include <RBD_Button.h>
+
+
+
 #define LED_PIN 5
 #define NUM_LEDS 25
 #define color CRGB::Purple
 
-RBD::Button button0(0, true);
-RBD::Button button1(30, true);
-RBD::Button button2(2, true);
-RBD::Button button3(3, true);
-RBD::Button button4(4, true);
-RBD::Button button6(6, true);
-RBD::Button button7(7, true);
-RBD::Button button8(8, true);
-RBD::Button button9(9, true);
-RBD::Button button10(10, true);
-RBD::Button button11(11, true);
-RBD::Button button12(12, true);
-RBD::Button button13(13, true);
-RBD::Button button14(14, true);
-RBD::Button button15(15, true);
-RBD::Button button16(16, true);
-RBD::Button button17(17, true);
-RBD::Button button18(18, true);
-RBD::Button button19(19, true);
-RBD::Button button20(20, true);
-RBD::Button button21(21, true);
-RBD::Button button22(22, true);
-RBD::Button button23(23, true);
-RBD::Button button24(24, true);
-RBD::Button button25(25, true);
+RBD::Button button0(2, true);
+RBD::Button button1(3, true);
+RBD::Button button2(4, true);
+RBD::Button button3(6, true);
+RBD::Button button4(7, true);
+
+RBD::Button button6(8, true);
+RBD::Button button7(9, true);
+RBD::Button button8(10, true);
+RBD::Button button9(11, true);
+RBD::Button button10(12, true);
+
+RBD::Button button11(13, true);
+RBD::Button button12(14, true);
+RBD::Button button13(15, true);
+RBD::Button button14(16, true);
+RBD::Button button15(17, true);
+
+RBD::Button button16(18, true);
+RBD::Button button17(19, true);
+RBD::Button button18(20, true);
+RBD::Button button19(21, true);
+RBD::Button button20(22, true);
+
+RBD::Button button21(23, true);
+RBD::Button button22(24, true);
+RBD::Button button23(25, true);
+RBD::Button button24(28, true);
+RBD::Button button25(29, true);
 
 CRGB leds[NUM_LEDS];
 
@@ -75,7 +83,6 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
-
 }
 
 void loop() {
