@@ -41,7 +41,7 @@
 #include <fastspi_ref.h>
 #include <FastLED.h>
 #include <power_mgt.h>
-#include "WineSplashScreen_png.h"
+#include "WineSplashScreen_jpg.h"
 #include "Wine2_png.h"
 #include "camera_png.h"
 #include "wineLabel_png.h"
@@ -511,8 +511,8 @@ void splashScreen()
   SimbleeForMobile.drawRect(0, 0, 320, 570, GE_RED);
   SimbleeForMobile.drawText(20, 200, "LOADING", WHITE, 50);
   SimbleeForMobile.drawText(20, 250, "INTERFACE", WHITE, 50);
-  //SimbleeForMobile.imageSource(1, PNG, WineSplashScreen_png, WineSplashScreen_png_len);
-  //SimbleeForMobile.drawImage(1, 0, 0);
+  SimbleeForMobile.imageSource(1,JPG, WineSplashScreen_jpg, WineSplashScreen_jpg_len);
+  SimbleeForMobile.drawImage(1, 0, 0);
   SimbleeForMobile.endScreen();
 }
 
@@ -772,14 +772,16 @@ void checkButtonState(RBD::Button & toButton, CRGB & someLED, int cellID) {
   if (toButton.isPressed()) {
     if (initialized == false) {
       currentButtonState[cellID] = true;
+      someLED = color;
     }
     else
       nextButtonState[cellID] = true;
+      someLED = color;
   }
   else if (toButton.isReleased()) {
     if (initialized == false) {
       currentButtonState[cellID] = false;
-      someLED = color;
+      
 
     }
     else
@@ -831,6 +833,8 @@ void compareStates() {
     SimbleeForMobile.setVisible(insertScreen1, false);
     SimbleeForMobile.setVisible(insertScreen2, false);
     SimbleeForMobile.setVisible(insertScreen3, false);
+    FastLED.clear();
+    FastLED.show();
   }
 }
 
@@ -840,7 +844,7 @@ void showWineInsertScreen() {
   SimbleeForMobile.setVisible(insertScreen3, true);
   checkAllButtons();
   FastLED.show();
-  delay(10);
+  delay(100);
   initialized = true;
   compareStates();
 }
@@ -976,6 +980,7 @@ void removeBottle()
   FastLED.clear();
   leds[((winePage-1)*4)+wineChosen-1] = color2;
   FastLED.show();
+  delay(100);
   initialized = true;
   while(nextButtonState[((winePage-1)*4)+wineChosen-1] == true)
   {
@@ -988,6 +993,7 @@ void removeBottle()
   SimbleeForMobile.setVisible(removeScreen3,false);
   FastLED.clear();
   FastLED.show();
+  delay(100);
 }
 
 
@@ -1070,21 +1076,25 @@ void ui_event(event_t &event)
     else if (event.id == wineImage1)
     {
       wineChosen = 1;
+      //SimbleeForMobile.showScreen(5);
       removeBottle();
     }
     else if (event.id == wineImage2)
     {
       wineChosen = 2;
+      //SimbleeForMobile.showScreen(5);
       removeBottle();
     }
     else if (event.id == wineImage3)
     {
       wineChosen = 3;
+      //SimbleeForMobile.showScreen(5);
       removeBottle();
     }
     else if (event.id == wineImage4)
     {
       wineChosen = 4;
+      //SimbleeForMobile.showScreen(5);
       removeBottle();
     }
   }
