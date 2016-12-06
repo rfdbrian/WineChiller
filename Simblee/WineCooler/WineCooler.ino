@@ -61,6 +61,10 @@ bool initialized = false,
      updatePage = false;
 
 
+
+#define DEMOUNIT
+
+
 //APP STATUS
 //0 = default
 //1 = insert wine
@@ -491,29 +495,29 @@ void checkAllButtons()
   checkButtonState(button3, leds[3], 1);
   checkButtonState(button4, leds[4], 0);
 
-  checkButtonState(button6, leds[5], 9);
-  checkButtonState(button7, leds[6], 8);
+  checkButtonState(button6, leds[9], 5);
+  checkButtonState(button7, leds[8], 6);
   checkButtonState(button8, leds[7], 7);
-  checkButtonState(button9, leds[8], 6);
-  checkButtonState(button10, leds[9], 5);
+  checkButtonState(button9, leds[6], 8);
+  checkButtonState(button10, leds[5], 9);
 
-  checkButtonState(button11, leds[10], 14);
-  checkButtonState(button12, leds[11], 13);
+  checkButtonState(button11, leds[14], 10);
+  checkButtonState(button12, leds[13], 11);
   checkButtonState(button13, leds[12], 12);
-  checkButtonState(button14, leds[13], 11);
-  checkButtonState(button15, leds[14], 10);
+  checkButtonState(button14, leds[11], 13);
+  checkButtonState(button15, leds[10], 14);
 
-  checkButtonState(button16, leds[15], 19);
-  checkButtonState(button17, leds[16], 18);
+  checkButtonState(button16, leds[19], 15);
+  checkButtonState(button17, leds[18], 16);
   checkButtonState(button18, leds[17], 17);
-  checkButtonState(button19, leds[18], 16);
-  checkButtonState(button20, leds[19], 15);
+  checkButtonState(button19, leds[16], 18);
+  checkButtonState(button20, leds[15], 19);
 
-  checkButtonState(button21, leds[20], 24);
-  checkButtonState(button22, leds[21], 23);
+  checkButtonState(button21, leds[24], 20);
+  checkButtonState(button22, leds[23], 21);
   checkButtonState(button23, leds[22], 22);
-  checkButtonState(button24, leds[23], 21);
-  checkButtonState(button25, leds[24], 20);
+  checkButtonState(button24, leds[21], 23);
+  checkButtonState(button25, leds[20], 24);
 
 #endif
 
@@ -679,6 +683,7 @@ void removeBottle()
     }
   }
   SimbleeForMobile.setVisible(removeScreen4, true);
+
   FastLED.clear();
   leds[((winePage-1)*4)+wineChosen-1] = color2;
   FastLED.show();
