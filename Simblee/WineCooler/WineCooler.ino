@@ -126,9 +126,7 @@ RBD::Button button23(23, true);
 RBD::Button button24(24, true);
 RBD::Button button25(25, true);
 
-#endif
-
-#ifdef DEMOUNIT
+#elif DEMOUNIT
 
 RBD::Button button0(2, true);
 RBD::Button button1(3, true);
@@ -485,9 +483,7 @@ void checkAllButtons()
   checkButtonState(button24, leds[23], 23);
   checkButtonState(button25, leds[24], 24);
 
-#endif
-
-#ifdef DEMOUNIT
+#elif DEMOUNIT
 
   checkButtonState(button0, leds[0], 4);
   checkButtonState(button1, leds[1], 3);
@@ -684,12 +680,23 @@ void removeBottle()
   }
   SimbleeForMobile.setVisible(removeScreen4, true);
 
+  int ledPosition = ((winePage-1)*4)+wineChosen-1;
+  #if DEMOUNIT
+
+  //  Positions on demo unit are reversed. Therefore LED index for corresponding
+  //    switch is the ceiling of SWH_POS in multiple of 4 - remainder of SWH_POS / 4
+  int remainder = ledPosition % 4;
+  int switchPosCeiling = ledPosition + 4 - remainder;
+  int ledPosition = switchPosCeiling - remainder;
+
+  #endif
+  
   FastLED.clear();
-  leds[((winePage-1)*4)+wineChosen-1] = color2;
+  leds[ledPosition] = color2;
   FastLED.show();
   delay(100);
   initialized = true;
-  while(nextButtonState[((winePage-1)*4)+wineChosen-1] == true)
+  while(nextButtonState[ledPosition] == true)
   {
     checkAllButtons();
   }
