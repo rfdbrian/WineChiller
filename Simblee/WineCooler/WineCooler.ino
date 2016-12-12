@@ -33,6 +33,18 @@
 #define GE_LIGHTGRAY rgb(194,193,193)
 #define GE_BEIGE rgb(216,208,200)
 
+<<<<<<< Updated upstream
+=======
+#define DEMO_UNIT
+
+uint8_t currentButtonState[25],
+        nextButtonState[25],
+        wineStored[25];
+bool initialized = false,
+     updatePage = false;
+
+
+>>>>>>> Stashed changes
 //APP STATUS
 //0 = default
 //1 = insert wine
@@ -71,6 +83,7 @@ uint8_t previousPage, nextPage, pageValue,
 uint8_t wineRect[25];
 
 
+<<<<<<< Updated upstream
 //0 = in possesion
 //1 = in cooler
 //2 = buy
@@ -86,6 +99,74 @@ uint8_t chillerSlot[25] = {255, 255, 255, 255, 255,
                            255, 255, 255, 255, 255,
                            255, 255, 255, 255, 255
                           };
+=======
+uint8_t winePage = 1,
+        addedWine = 0,
+        switchDetected = 0,
+        wineChosen = 0;
+
+#ifdef TESTBOX
+//RBD::Button button0(0, true);
+//RBD::Button button1(30, true);
+//RBD::Button button2(2, true);
+//RBD::Button button3(3, true);
+//RBD::Button button4(4, true);
+//RBD::Button button6(6, true);
+//RBD::Button button7(7, true);
+//RBD::Button button8(8, true);
+//RBD::Button button9(9, true);
+//RBD::Button button10(10, true);
+//RBD::Button button11(11, true);
+//RBD::Button button12(12, true);
+//RBD::Button button13(13, true);
+//RBD::Button button14(14, true);
+//RBD::Button button15(15, true);
+//RBD::Button button16(16, true);
+//RBD::Button button17(17, true);
+//RBD::Button button18(18, true);
+//RBD::Button button19(19, true);
+//RBD::Button button20(20, true);
+//RBD::Button button21(21, true);
+//RBD::Button button22(22, true);
+//RBD::Button button23(23, true);
+//RBD::Button button24(24, true);
+//RBD::Button button25(25, true);
+#endif
+
+#ifdef DEMO_UNIT
+
+RBD::Button button0(2, true);
+RBD::Button button1(3, true);
+RBD::Button button2(4, true);
+RBD::Button button3(6, true);
+RBD::Button button4(7, true);
+
+RBD::Button button6(8, true);
+RBD::Button button7(9, true);
+RBD::Button button8(10, true);
+RBD::Button button9(11, true);
+RBD::Button button10(12, true);
+
+RBD::Button button11(13, true);
+RBD::Button button12(14, true);
+RBD::Button button13(15, true);
+RBD::Button button14(16, true);
+RBD::Button button15(17, true);
+
+RBD::Button button16(18, true);
+RBD::Button button17(19, true);
+RBD::Button button18(20, true);
+RBD::Button button19(21, true);
+RBD::Button button20(22, true);
+
+RBD::Button button21(23, true);
+RBD::Button button22(24, true);
+RBD::Button button23(25, true);
+RBD::Button button24(28, true);
+RBD::Button button25(29, true);
+
+#endif
+>>>>>>> Stashed changes
 
 uint8_t rect[25];
 
@@ -528,6 +609,7 @@ void checkButtonState(Slot toButton, int cellID) {
 }
 
 void checkAllButtons() {
+<<<<<<< Updated upstream
   for (int i = 0; i < 25; i++) {
     checkButtonState(Slots[i], i);
   }
@@ -680,6 +762,68 @@ void setup()
   SimbleeForMobile.advertisementData = "Chiller";
   SimbleeForMobile.domain = "FirstBuild.simblee.com";
   SimbleeForMobile.begin();
+=======
+#ifdef DEMO_UNIT
+  checkButtonState(button0, leds[0], 0);
+  checkButtonState(button1, leds[1], 1);
+  checkButtonState(button2, leds[2], 2);
+  checkButtonState(button3, leds[3], 3);
+  checkButtonState(button4, leds[4], 4);
+  checkButtonState(button6, leds[5], 5);
+  checkButtonState(button7, leds[6], 6);
+  checkButtonState(button8, leds[7], 7);
+  checkButtonState(button9, leds[8], 8);
+  checkButtonState(button10, leds[9], 9);
+  checkButtonState(button11, leds[10], 10);
+  checkButtonState(button12, leds[11], 11);
+  checkButtonState(button13, leds[12], 12);
+  checkButtonState(button14, leds[13], 13);
+  checkButtonState(button15, leds[14], 14);
+  checkButtonState(button16, leds[15], 15);
+  checkButtonState(button17, leds[16], 16);
+  checkButtonState(button18, leds[17], 17);
+  checkButtonState(button19, leds[18], 18);
+  checkButtonState(button20, leds[19], 19);
+  checkButtonState(button21, leds[20], 20);
+  checkButtonState(button22, leds[21], 21);
+  checkButtonState(button23, leds[22], 22);
+  checkButtonState(button24, leds[23], 23);
+  checkButtonState(button25, leds[24], 24);
+#endif
+
+#ifdef DEMO_UNIT
+  checkButtonState(button0, leds[4], 0);
+  checkButtonState(button1, leds[3], 1);
+  checkButtonState(button2, leds[2], 2);
+  checkButtonState(button3, leds[1], 3);
+  checkButtonState(button4, leds[0], 4);
+  
+  checkButtonState(button6, leds[9], 5);
+  checkButtonState(button7, leds[8], 6);
+  checkButtonState(button8, leds[7], 7);
+  checkButtonState(button9, leds[6], 8);
+  checkButtonState(button10, leds[5], 9);
+  
+  checkButtonState(button11, leds[14], 10);
+  checkButtonState(button12, leds[13], 11);
+  checkButtonState(button13, leds[12], 12);
+  checkButtonState(button14, leds[11], 13);
+  checkButtonState(button15, leds[10], 14);
+  
+  checkButtonState(button16, leds[19], 15);
+  checkButtonState(button17, leds[18], 16);
+  checkButtonState(button18, leds[17], 17);
+  checkButtonState(button19, leds[16], 18);
+  checkButtonState(button20, leds[15], 19);
+  
+  checkButtonState(button21, leds[20], 20);
+  checkButtonState(button22, leds[23], 21);
+  checkButtonState(button23, leds[22], 22);
+  checkButtonState(button24, leds[21], 23);
+  checkButtonState(button25, leds[20], 24);  
+#endif
+
+>>>>>>> Stashed changes
 }
 
 void loop()
