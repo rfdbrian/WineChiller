@@ -124,6 +124,23 @@ Wine wine[25] = {Wine("Grand Estates", "Columbia Crest",  "2003", "Cabernet Sauv
                  Wine(),
                 };
 
+int recalc(int test) {
+  int ledPosition = test;
+  int remainder = ledPosition % 5;
+  
+  if (remainder == 0) {
+      ledPosition += 4;
+  } else if (remainder == 1) {
+      ledPosition += 2;
+  } else if (remainder == 3) {
+      ledPosition -= 2;
+  } else if (remainder == 4) {
+      ledPosition -= 4;
+  }
+
+  return ledPosition;
+}
+
 //SCREEN 1 BASE*********************************************************************************
 void splashScreen() {
   SimbleeForMobile.beginScreen(WHITE, PORTRAIT);
