@@ -35,6 +35,8 @@
 #define numberOfWines 10
 #define INSERT_WINE_TIMEOUT 3000
 
+#define DEMO 1
+
 #define WineSpashScreen 1
 #define ColumbiaCrest1 2
 #define ColumbiaCrest2 3
@@ -113,6 +115,69 @@ Wine wine[25] = {Wine("Grand Estates", "Columbia Crest",  "2003", "Cabernet Sauv
                  Wine(),
                  Wine(),
                  Wine(),
+
+//SCREEN 1 BASE*********************************************************************************
+void splashScreen() {
+  SimbleeForMobile.beginScreen(WHITE, PORTRAIT);
+  SimbleeForMobile.drawRect(0, 0, 320, 570, GE_RED);
+  SimbleeForMobile.drawText(20, 200, "LOADING", WHITE, 50);
+  SimbleeForMobile.drawText(20, 250, "INTERFACE", WHITE, 50);
+  SimbleeForMobile.imageSource(1,JPG, WineSplashScreen_jpg, WineSplashScreen_jpg_len);
+  SimbleeForMobile.drawImage(1, 0, 0);
+  SimbleeForMobile.endScreen();
+}
+
+//SCREEN 2 BASE*********************************************************************************
+void inventoryScreen() {
+  SimbleeForMobile.beginScreen(WHITE, PORTRAIT);
+
+  //BACKGROUND
+  SimbleeForMobile.drawRect(0, 0, 320, 570, GE_RED);
+  SimbleeForMobile.drawRect(0, 100, 320, 400, WHITE);
+  SimbleeForMobile.drawRect(159, 100, 2, 400, GRAY);
+  SimbleeForMobile.drawRect(0, 299, 320, 2, GRAY);
+=======
+        removeScreen1, removeScreen2, removeScreen3, removeScreen4,
+        removeButton, returnButton,
+        VineyardUI[5], WineName1UI[5], WineName2UI[5], CountryUI[5], PriceUI[5], LocationUI[5], OverlayUI[5],
+        VineyardUISingle, WineName1UISingle, WineName2UISingle, CountryUISingle, PriceUISingle, LocationUISingle,
+        addPopUpDetectedText, addPopUpRackText, addPopUpRackNumber, addPopUpSelectText,
+        removePopUpDetectedText, removePopUpRackText, removePopUpRackNumber, removePopUpSelectText,
+        screen2Title, screen2Background;
+
+int8_t winePage = 1,
+       addDetected = -1,
+       removeDetected = -1,
+       switchDetected = -1,
+       clickedOverlay = 0;
+
+char *ChillerSlot[25] = {"A1", "A2", "A3", "A4", "A5",
+                         "B1", "B2", "B3", "B4", "B5",
+                         "C1", "C2", "C3", "C4", "C5",
+                         "D1", "D2", "D3", "D4", "D5",
+                         "E1", "E2", "E3", "E4", "E5"
+                        };
+
+//  Wine.h describes a basic "Wine" class. There are the classic getter
+//    methods for various static values. There exists only one setter value
+//    for "index," which would be the index to the Slots vector defined below.
+
+Wine wine[25] = {Wine("Grand Estates", "Columbia Crest",  "2003", "Cabernet Sauvignon", "$11.24", -1, 0),
+                 Wine("Grand Reserva", "Carmen", "2012", "Carbenet Sauvignon", "$14.50", -1, 0),
+                 Wine("Rosso & Blonco", "Francis Ford Coppola", "2011", "Shiraz", "$12.00", -1, 0),
+                 Wine("Reserva Rioja", "La Tercera", "2010", "Spanish Red", "$17.98", -1, 0),
+                 Wine("Sonoma County", "Louis M. Martini", "2013", "Cabernet Sauvignon", "$14.99", -1, 0),
+                 Wine("Diamond Collection Ivory", "Francis Ford Coppola", "2013", "Cabernet Sauvignon", "$14.98", -1, 0),
+                 Wine("Prieure de Cenac", "Chateau Saint-Didier-Parnac", "2014", "Malbec", "$7.98", -1, 0),
+                 Wine("Reserva", "Perez Cruz", "2013", "Cabernet Sauvignon", "$14.46", -1, 0),
+                 Wine("Proximo Roja", "Marquest De Riscal", "2010", "Spanish Red", "$9.48", -1, 0),
+                 Wine(),
+                 Wine(),
+                 Wine(),
+                 Wine(),
+                 Wine(),
+                 Wine(),
+                 Wine(),
                  Wine(),
                  Wine(),
                  Wine(),
@@ -124,9 +189,25 @@ Wine wine[25] = {Wine("Grand Estates", "Columbia Crest",  "2003", "Cabernet Sauv
                  Wine(),
                 };
 
+int recalc(int test) {
+  int ledPosition = test;
+  int remainder = ledPosition % 5;
+  
+  if (remainder == 0) {
+      ledPosition += 4;
+  } else if (remainder == 1) {
+      ledPosition += 2;
+  } else if (remainder == 3) {
+      ledPosition -= 2;
+  } else if (remainder == 4) {
+      ledPosition -= 4;
+  }
+
+  return ledPosition;
+}
+
 //SCREEN 1 BASE*********************************************************************************
-void splashScreen()
-{
+void splashScreen() {
   SimbleeForMobile.beginScreen(WHITE, PORTRAIT);
   SimbleeForMobile.drawRect(0, 0, 320, 570, GE_RED);
   SimbleeForMobile.drawText(20, 200, "LOADING", WHITE, 50);
@@ -138,8 +219,7 @@ void splashScreen()
 //************************************************************************************************
 
 //SCREEN 2 BASE*********************************************************************************
-void inventoryScreen()
-{
+void inventoryScreen() {
   SimbleeForMobile.beginScreen(WHITE, PORTRAIT);
 
   //BACKGROUND
@@ -167,6 +247,7 @@ void inventoryScreen()
   //SimbleeForMobile.imageSource(Martini1,JPG,Martini1_jpg,Martini1_jpg_len);
   //SimbleeForMobile.drawImage(Martini1,10,354);
   SimbleeForMobile.drawRect(10, 354, 50, 60, BLACK);
+>>>>>>> Simblee
 
   //TITLE
   screen2Title = SimbleeForMobile.drawText(90, 25, "Wine Inventory", WHITE, 25);
@@ -246,8 +327,7 @@ void inventoryScreen()
 //************************************************************************************************
 
 //SCREEN 5 BASE*********************************************************************************
-void addScreen()
-{
+void addScreen() {
   SimbleeForMobile.beginScreen();
 
   //BACKGROUND
@@ -332,9 +412,6 @@ void checkAllButtons() {
   initialized = true;
 }
 
-//  I've just used this function as an example to demonstrate the classes I've implemented.
-//    Remember: onPressed() returns true for a pressed button.
-//      Progressive presses will return false.
 void checkAdd() {
   for (int i = 0; i < 25; i++) {
     if (currentButtonState[i] < nextButtonState[i]) {
@@ -342,7 +419,11 @@ void checkAdd() {
       currentButtonState[i] = nextButtonState[i];
       updatePage = true;
       addMode = 1;
+  #ifdef DEMO 
+      leds[recalc(addDetected)] = color;
+  #else
       leds[addDetected] = color;
+  #endif
     }
   }
 }
@@ -359,24 +440,20 @@ void checkRemove() {
 
 void compareStates() {
   count = millis();
-  while (switchDetected == -1 && millis() - count < INSERT_WINE_TIMEOUT) {
+  while (switchDetected == 0 && millis() - count < 5000) {
     checkAllButtons();
     for (int i = 0; i < 25; i++) {
       if (currentButtonState[i] < nextButtonState[i]) {
         switchDetected = i;
-        currentButtonState[i] = nextButtonState[i];
+        wineStored[switchDetected] = addedWine;
       }
     }
   }
-  if (switchDetected == -1) {
+  if (switchDetected == 0) {
     SimbleeForMobile.setVisible(insertScreen1, false);
     SimbleeForMobile.setVisible(insertScreen2, false);
     SimbleeForMobile.setVisible(insertScreen3, false);
     FastLED.clear();
-    FastLED.show();
-  }
-  else {
-    leds[switchDetected] = color;
     FastLED.show();
   }
 }
@@ -386,61 +463,187 @@ void showWineInsertScreen() {
   SimbleeForMobile.setVisible(insertScreen2, true);
   SimbleeForMobile.setVisible(insertScreen3, true);
   checkAllButtons();
+  FastLED.show();
+  delay(100);
+  initialized = true;
   compareStates();
 }
 
-void removeBottle()
-{
+void removeBottle() {
   SimbleeForMobile.setVisible(removeScreen1, true);
   SimbleeForMobile.setVisible(removeScreen2, true);
   SimbleeForMobile.setVisible(removeScreen3, true);
-  SimbleeForMobile.updateText(removeScreen4, ChillerSlot[wine[clickedOverlay + ((winePage - 1) * 5)].getIndex()]);
-  SimbleeForMobile.setVisible(removeScreen4, true);
-  for (int i = 0; i < 25; i++) {
-    if (ChillerSlot[i] == ChillerSlot[wine[clickedOverlay + ((winePage - 1) * 5)].getIndex()]) {
-      leds[i] = color2;
-      break;
+  if(winePage == 1)
+  {
+    if(wineChosen == 1)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 1);
+    }
+    else if(wineChosen == 2)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 2);
+    }
+    else if(wineChosen == 3)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 3);
+    }
+    else if(wineChosen == 4)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 4);
     }
   }
+  else if(winePage == 2)
+  {
+    if(wineChosen == 1)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 5);
+    }
+    else if(wineChosen == 2)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 6);
+    }
+    else if(wineChosen == 3)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 7);
+    }
+    else if(wineChosen == 4)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 8);
+    }
+  }
+  else if(winePage == 3)
+  {
+    if(wineChosen == 1)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 9);
+    }
+    else if(wineChosen == 2)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 10);
+    }
+    else if(wineChosen == 3)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 11);
+    }
+    else if(wineChosen == 4)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 12);
+    }
+  }
+  else if(winePage == 4)
+  {
+    if(wineChosen == 1)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 13);
+    }
+    else if(wineChosen == 2)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 14);
+    }
+    else if(wineChosen == 3)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 15);
+    }
+    else if(wineChosen == 4)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 16);
+    }
+  }
+  else if(winePage == 5)
+  {
+    if(wineChosen == 1)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 17);
+    }
+    else if(wineChosen == 2)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 18);
+    }
+    else if(wineChosen == 3)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 19);
+    }
+    else if(wineChosen == 4)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 20);
+    }
+  }
+  else if(winePage == 6)
+  {
+    if(wineChosen == 1)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 21);
+    }
+    else if(wineChosen == 2)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 22);
+    }
+    else if(wineChosen == 3)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 23);
+    }
+    else if(wineChosen == 4)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 24);
+    }
+  }
+  else if(winePage == 7)
+  {
+    if(wineChosen == 1)
+    {
+      SimbleeForMobile.updateValue(removeScreen4, 25);
+    }
+  }
+  SimbleeForMobile.setVisible(removeScreen4, true);
+
+  int ledPosition = ((winePage-1)*4)+wineChosen-1;
+
+  #ifdef DEMOUNIT
+
+  //  Positions on demo unit are reversed. Therefore LED index for corresponding
+  //    switch is the ceiling of SWH_POS in multiple of 4 - remainder of SWH_POS / 4
+  int remainder = ledPosition % 5;
+
+  if (remainder == 0) {
+      ledPosition += 4;
+  } else if (remainder == 1) {
+      ledPosition += 2;
+  } else if (remainder == 3) {
+      ledPosition -= 2;
+  } else if (remainder == 4) {
+      ledPosition -= 4;
+  }
+
+  #endif
+  
+  FastLED.clear();
+  leds[ledPosition] = color2;
   FastLED.show();
-  while (nextButtonState[wine[clickedOverlay + ((winePage - 1) * 5)].getIndex()] > 0)
+  delay(100);
+  initialized = true;
+  while(nextButtonState[ledPosition] == true)
   {
     checkAllButtons();
   }
-  wine[clickedOverlay + ((winePage - 1) * 5)].setIndex(-1);
+  initialized = false;
   SimbleeForMobile.setVisible(removeScreen4, false);
-  SimbleeForMobile.setVisible(removeScreen1, false);
-  SimbleeForMobile.setVisible(removeScreen2, false);
-  SimbleeForMobile.setVisible(removeScreen3, false);
+  SimbleeForMobile.setVisible(removeScreen1,false);
+  SimbleeForMobile.setVisible(removeScreen2,false);
+  SimbleeForMobile.setVisible(removeScreen3,false);
   FastLED.clear();
   FastLED.show();
   delay(100);
-  SimbleeForMobile.showScreen(2);
 }
 
+void SimbleeForMobile_onDisconnect() {
+  disconnected = true;
+}
 
-// Inializing vector of Slots for TESTBOX units.
-//   Should not have problems with corresponding
-//   switch and led positions.
-void setup()
-{
+void setup() {
   Serial.begin(9600);
+  initializePins();
+  //initializePinsTestBox();
 
-  for (int i = 0; i < 25; i++) {
-    if (i == 1) {
-      Slot tempSlotEdgeOne = Slot(30, leds[1]);
-      Slots.push_back(tempSlotEdgeOne);
-    }
-    else if (i > 4) {
-      Slot tempSlotEdgeOne = Slot(i + 1, leds[i]);
-      Slots.push_back(tempSlotEdgeOne);
-    }
-    else  {
-      Slot tempSlotEdgeOne = Slot(i, leds[i]);
-      Slots.push_back(tempSlotEdgeOne);
-    }
-
-  }
   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
   FastLED.clear();
   FastLED.show();
@@ -451,8 +654,7 @@ void setup()
   SimbleeForMobile.begin();
 }
 
-void loop()
-{
+void loop() {
   checkAllButtons();
   checkAdd();
   checkRemove();
@@ -584,8 +786,7 @@ void loop()
   SimbleeForMobile.process();
 }
 
-void ui_event(event_t &event)
-{
+void ui_event(event_t &event) {
   //SCREEN 2 EVENTS
   if (SimbleeForMobile.screen == 2)
   {
@@ -696,8 +897,7 @@ void ui_event(event_t &event)
   }
 }
 
-void ui()
-{
+void ui() {
   switch (SimbleeForMobile.screen)
   {
     case 1:
@@ -726,6 +926,3 @@ void ui()
   }
 }
 
-void SimbleeForMobile_onDisconnect() {
-  disconnected = true;
-}
