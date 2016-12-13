@@ -1,38 +1,41 @@
 #include "Wine.h"
 
-Wine::Wine() : name(""), vineyard(""), year(-1), country(""), price(""), index(-1) {};
+Wine::Wine() : name(""), vineyard(""), year(""), wineType(""), price(""), index(-1), image() {};
 
-Wine::Wine(std::string input_name, std::string input_vineyard, int input_year, std::string input_country, std::string input_price, int input_index) : 
-  name(input_name), vineyard(input_vineyard), year(input_year), country(input_country), price(input_price), index(input_index) {};
+Wine::Wine(char*  input_name, char* input_vineyard, char*  input_year, char*  input_wineType, char*  input_price, int input_index, int8_t input_image) :
+name(input_name), vineyard(input_vineyard), year(input_year), wineType(input_wineType), price(input_price), index(input_index), image(input_image) {};
 
 void Wine::setIndex(int assignedSlotIndex) {
-  index = assignedSlotIndex;
+    index = assignedSlotIndex;
 }
 
 // Getters for various properties for wine.
 //  These properties should never change after initialization.
-std::string Wine::getName() {
-  return name;
+char*  Wine::getName() {
+    return name;
 }
 
-std::string Wine::getVineyard() {
-  return vineyard;
+char* Wine::getVineyard() {
+    return vineyard;
 }
 
-int Wine::getYear() {
-  return year;
+char*  Wine::getYear() {
+    return year;
 }
 
-std::string Wine::getCountry() {
-  return country;
+char*  Wine::getwineType() {
+    return wineType;
 }
 
-std::string Wine::getPrice() {
-  return price;
+char*  Wine::getPrice() {
+    return price;
 }
 
 int Wine::getIndex() {
-  return index;
-} 
+    return index;
+}
 
+int8_t Wine::getImage() {
+    return image;
+}
 

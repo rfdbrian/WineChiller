@@ -33,6 +33,7 @@
 #define NUM_LEDS 25
 
 #define numberOfWines 10
+#define INSERT_WINE_TIMEOUT 3000
 
 #define WineSpashScreen 1
 #define ColumbiaCrest1 2
@@ -53,8 +54,6 @@
 #define PerezCruz2 17
 #define Proximo1 18
 #define Proximo2 19
-
-
 
 CRGB leds[NUM_LEDS];
 
@@ -98,8 +97,6 @@ char *ChillerSlot[25] = {"A1", "A2", "A3", "A4", "A5",
 //    methods for various static values. There exists only one setter value
 //    for "index," which would be the index to the Slots vector defined below.
 
-
-
 Wine wine[25] = {Wine("Grand Estates", "Columbia Crest",  "2003", "Cabernet Sauvignon", "$11.24", -1, 0),
                  Wine("Grand Reserva", "Carmen", "2012", "Carbenet Sauvignon", "$14.50", -1, 0),
                  Wine("Rosso & Blonco", "Francis Ford Coppola", "2011", "Shiraz", "$12.00", -1, 0),
@@ -127,7 +124,6 @@ Wine wine[25] = {Wine("Grand Estates", "Columbia Crest",  "2003", "Cabernet Sauv
                  Wine(),
                 };
 
-
 //SCREEN 1 BASE*********************************************************************************
 void splashScreen()
 {
@@ -148,12 +144,12 @@ void inventoryScreen()
 
   //BACKGROUND
   screen2Background = SimbleeForMobile.drawRect(0, 0, 320, 480, GE_RED);
-  SimbleeForMobile.drawRect(0, 60, 320,  360, GE_LIGHTGRAY);
-  SimbleeForMobile.drawRect(0, 61, 320, 70, WHITE);
-  SimbleeForMobile.drawRect(0, 133, 320, 70, WHITE);
-  SimbleeForMobile.drawRect(0, 205, 320, 70, WHITE);
-  SimbleeForMobile.drawRect(0, 277, 320, 70, WHITE);
-  SimbleeForMobile.drawRect(0, 349, 320, 70, WHITE);
+  SimbleeForMobile.drawRect(0, 60, 280,  360, GE_LIGHTGRAY);
+  SimbleeForMobile.drawRect(0, 61, 280, 70, WHITE);
+  SimbleeForMobile.drawRect(0, 133, 280, 70, WHITE);
+  SimbleeForMobile.drawRect(0, 205, 280, 70, WHITE);
+  SimbleeForMobile.drawRect(0, 277, 280, 70, WHITE);
+  SimbleeForMobile.drawRect(0, 349, 280, 70, WHITE);
 
   //IMAGES
   //SimbleeForMobile.imageSource(ColumbiaCrest2,JPG,ColumbiaCrest2_jpg,ColumbiaCrest2_jpg_len);
@@ -180,6 +176,7 @@ void inventoryScreen()
   int overlayY[5] = {61, 133, 205, 277, 349};
 
   for (int i = 0; i < 5; i++) {
+    //VINEYARD
     VineyardUI[i] = SimbleeForMobile.drawText(70, boxY[i], "VINEYARD 1", GE_LIGHTGRAY, 12);
     //WINE NAME 1
     WineName1UI[i] = SimbleeForMobile.drawText(70, boxY[i] + 12, "WINE NAME", BLACK, 14);
@@ -190,13 +187,22 @@ void inventoryScreen()
     //PRICE
     PriceUI[i] = SimbleeForMobile.drawText(70, boxY[i] + 50 , "$25.00", GE_LIGHTGRAY, 10);
     //LOCATION TITLE
-    SimbleeForMobile.drawText(260, boxY[i], "LOCATION", GE_LIGHTGRAY, 12);
+    SimbleeForMobile.drawText(220, boxY[i], "LOCATION", GE_LIGHTGRAY, 12);
     //LOCATION
-    LocationUI[i] = SimbleeForMobile.drawText(272, boxY[i] + 15, "", BLACK, 30);
+    LocationUI[i] = SimbleeForMobile.drawText(232, boxY[i] + 15, "", BLACK, 30);
     //INVISBLE OVERLAY
-    OverlayUI[i] = SimbleeForMobile.drawRect(0, overlayY[i], 320, 80, rgba(0, 0, 0, 255));
+    OverlayUI[i] = SimbleeForMobile.drawRect(0, overlayY[i], 280, 80, rgba(0, 0, 0, 255));
     SimbleeForMobile.setEvents(OverlayUI[i], EVENT_PRESS);
   }
+
+  //PAGE SELECTION
+  pageValue = SimbleeForMobile.drawText(295, 230, 1, WHITE, 20);
+  SimbleeForMobile.drawText(297, 70, "^", WHITE, 20);
+  previousPage = SimbleeForMobile.drawButton(280, 60, 40, "", WHITE, 2);
+  SimbleeForMobile.setEvents(previousPage, EVENT_PRESS);
+  SimbleeForMobile.drawText(297, 390, "v", WHITE, 12);
+  nextPage = SimbleeForMobile.drawButton(280, 380, 40, "", WHITE, 2);
+  SimbleeForMobile.setEvents(nextPage, EVENT_PRESS);
 
   //BLUR SCREEN
   insertScreen1 = SimbleeForMobile.drawRect(0, 0, 320, 570, rgba(155, 155, 155, 50));
@@ -233,14 +239,6 @@ void inventoryScreen()
   SimbleeForMobile.setVisible(removePopUpRackText, false);
   removePopUpRackNumber = SimbleeForMobile.drawText(140, 240, "A1", WHITE, 20);
   SimbleeForMobile.setVisible(removePopUpRackNumber, false);
-
-  //PAGE SELECTION
-  SimbleeForMobile.drawText(134 , 437, "Page", WHITE, 16);
-  pageValue = SimbleeForMobile.drawText(174, 437, 1, WHITE, 16);
-  previousPage = SimbleeForMobile.drawButton(2, 432, 20, "<<", WHITE, 1);
-  SimbleeForMobile.setEvents(previousPage, EVENT_PRESS);
-  nextPage = SimbleeForMobile.drawButton(300, 432, 20, ">>", WHITE, 1);
-  SimbleeForMobile.setEvents(nextPage, EVENT_PRESS);
 
   SimbleeForMobile.endScreen();
 }
@@ -361,7 +359,7 @@ void checkRemove() {
 
 void compareStates() {
   count = millis();
-  while (switchDetected == -1 && millis() - count < 5000) {
+  while (switchDetected == -1 && millis() - count < INSERT_WINE_TIMEOUT) {
     checkAllButtons();
     for (int i = 0; i < 25; i++) {
       if (currentButtonState[i] < nextButtonState[i]) {
@@ -370,13 +368,15 @@ void compareStates() {
       }
     }
   }
-  leds[switchDetected] = color;
-  FastLED.show();
   if (switchDetected == -1) {
     SimbleeForMobile.setVisible(insertScreen1, false);
     SimbleeForMobile.setVisible(insertScreen2, false);
     SimbleeForMobile.setVisible(insertScreen3, false);
     FastLED.clear();
+    FastLED.show();
+  }
+  else {
+    leds[switchDetected] = color;
     FastLED.show();
   }
 }
@@ -386,7 +386,6 @@ void showWineInsertScreen() {
   SimbleeForMobile.setVisible(insertScreen2, true);
   SimbleeForMobile.setVisible(insertScreen3, true);
   checkAllButtons();
-  delay(100);
   compareStates();
 }
 
@@ -445,7 +444,7 @@ void setup()
   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
   FastLED.clear();
   FastLED.show();
-  checkAllButtons();
+  //checkAllButtons();
   SimbleeForMobile.deviceName = "Wine";
   SimbleeForMobile.advertisementData = "Chiller";
   SimbleeForMobile.domain = "FirstBuild4.simblee.com";
@@ -497,6 +496,8 @@ void loop()
             }
           }
           Serial.println(bottle);
+          leds[removeDetected] = color2;
+          FastLED.show();
           SimbleeForMobile.updateText(removePopUpRackNumber, ChillerSlot[removeDetected]);
           SimbleeForMobile.setVisible(insertScreen1, true);
           SimbleeForMobile.setVisible(insertScreen2, true);
@@ -510,6 +511,8 @@ void loop()
           SimbleeForMobile.setVisible(removePopUpDetectedText, false);
           SimbleeForMobile.setVisible(removePopUpRackText, false);
           SimbleeForMobile.setVisible(removePopUpRackNumber, false);
+          FastLED.clear();
+          FastLED.show();
           removeDetected = -1;
         }
 
