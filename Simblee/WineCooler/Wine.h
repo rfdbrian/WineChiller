@@ -4,26 +4,28 @@
 #include <string>
 
 class Wine {
-	private:
-		std::string name;
-    std::string vineyard;
-    int year;
-		std::string country;
-		std::string price;
-		int index;
-
-	public:
+private:
+    char*  name;
+    char* vineyard;
+    char*  year;
+    char*  wineType;
+    char*  price;
+    int index;
+    int8_t image;
+    
+public:
     Wine();
-    Wine(std::string input_name, std::string input_vineyard, int input_wineYear, std::string input_country, std::string input_price, int input_index);
-
-		void setIndex(int assignedSlotIndex);
-
-    std::string getName();
-    std::string getVineyard();
-    int getYear();
-    std::string getCountry();
-    std::string getPrice();
+    Wine( char*  input_name, char* input_vineyard, char*  input_wineYear, char*  input_wineType, char*  input_price, int input_index, int8_t input_image);
+    
+    void setIndex(int assignedSlotIndex);
+    
+    char*  getName();
+    char* getVineyard();
+    char*  getYear();
+    char*  getwineType();
+    char*  getPrice();
     int getIndex();
+    int8_t getImage();
 };
 
 #endif
