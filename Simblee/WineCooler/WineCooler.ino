@@ -35,6 +35,8 @@
 #define numberOfWines 10
 #define INSERT_WINE_TIMEOUT 3000
 
+#define DEMO 1
+
 #define WineSpashScreen 1
 #define ColumbiaCrest1 2
 #define ColumbiaCrest2 3
@@ -353,7 +355,11 @@ void checkAdd() {
       currentButtonState[i] = nextButtonState[i];
       updatePage = true;
       addMode = 1;
+  #ifdef DEMO 
+      leds[recalc(addDetected)] = color;
+  #else
       leds[addDetected] = color;
+  #endif
     }
   }
 }
@@ -387,7 +393,11 @@ void compareStates() {
     FastLED.show();
   }
   else {
+  #ifdef DEMO 
+    leds[recalc(switchDetected)] = color;
+  #else
     leds[switchDetected] = color;
+  #endif
     FastLED.show();
   }
 }
@@ -408,7 +418,11 @@ void removeBottle() {
   SimbleeForMobile.setVisible(removeScreen4, true);
   for (int i = 0; i < 25; i++) {
     if (ChillerSlot[i] == ChillerSlot[wine[clickedOverlay + ((winePage - 1) * 5)].getIndex()]) {
+  #ifdef DEMO 
+      leds[recalc(i)] = color2;
+  #else
       leds[i] = color2;
+  #endif
       break;
     }
   }
