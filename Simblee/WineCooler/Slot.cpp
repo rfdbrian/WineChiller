@@ -20,9 +20,9 @@ bool Slot::isReleased() {
 }
 
 bool Slot::onPressed() {
-    btn.onPressed();
+    btn.isPressed();
 }
 
 bool Slot::onReleased() {
-    btn.onReleased();
+    btn.isPressed();
 }
