@@ -74,16 +74,13 @@ uint8_t previousPage, nextPage, pageValue,
         addButton,
         removeScreen1, removeScreen2, removeScreen3, removeScreen4,
         removeButton, returnButton,
-        VineyardUI[5], WineName1UI[5], WineName2UI[5], CountryUI[5], PriceUI[5], LocationUI[5], OverlayUI[5], WWDWTB[5], starsRect[5], starsImg[5],
+        VineyardUI[5], WineName1UI[5], WineName2UI[5], CountryUI[5], PriceUI[5], LocationUI[5], OverlayUI[5], WWDWTB[5],starsRect[5], starsImg[5],
         VineyardUISingle, WineName1UISingle, WineName2UISingle, CountryUISingle, PriceUISingle, LocationUISingle,
         addPopUpDetectedText, addPopUpRackText, addPopUpRackNumber, addPopUpSelectText,
         removePopUpDetectedText, removePopUpRackText, removePopUpRackNumber, removePopUpSelectText,
         screen2Title, screen2Background, screen2Segment,
         screen6Segment, screen6nextPage, screen6previousPage, screen6pageValue,
-        HistoryVineyardUI[5], HistoryWineName1UI[5], HistoryWineName2UI[5], HistoryCountryUI[5], HistoryOverlayUI[5],
-        consumeButton, giftButton, deleteButton, clickedOverlay2,
-        HistoryVineyardUISingle, HistoryWineName1UISingle, HistoryWineName2UISingle, HistoryCountryUISingle, HistoryPriceUISingle, starsRectUISingle,
-        rate[5];
+        HistoryVineyardUI[5], HistoryWineName1UI[5], HistoryWineName2UI[5], HistoryCountryUI[5];
 
 int8_t winePage = 1,
        historyPage = 1,
@@ -159,12 +156,12 @@ void inventoryScreen()
   SimbleeForMobile.drawRect(0, 277, 280, 70, WHITE);
   SimbleeForMobile.drawRect(0, 349, 280, 70, WHITE);
 
-  SimbleeForMobile.imageSource(2, PNG, WineBottleImage_png, WineBottleImage_png_len);
-  SimbleeForMobile.drawImage(2, 25, 66);
-  SimbleeForMobile.drawImage(2, 25, 138);
-  SimbleeForMobile.drawImage(2, 25, 210);
-  SimbleeForMobile.drawImage(2, 25, 282);
-  SimbleeForMobile.drawImage(2, 25, 354);
+  SimbleeForMobile.imageSource(2,PNG,WineBottleImage_png,WineBottleImage_png_len);
+  SimbleeForMobile.drawImage(2,25,66);
+  SimbleeForMobile.drawImage(2,25,138);
+  SimbleeForMobile.drawImage(2,25,210);
+  SimbleeForMobile.drawImage(2,25,282);
+  SimbleeForMobile.drawImage(2,25,354);
 
   //TITLE
   screen2Title = SimbleeForMobile.drawText(90, 25, "Wine Inventory", WHITE, 25);
@@ -202,8 +199,8 @@ void inventoryScreen()
   nextPage = SimbleeForMobile.drawButton(280, 380, 40, "", WHITE, 2);
   SimbleeForMobile.setEvents(nextPage, EVENT_PRESS);
 
-  char* segmentNames[] = {"Inventory", "History"};
-  screen2Segment = SimbleeForMobile.drawSegment(80, 435, 160, segmentNames, countof(segmentNames), WHITE);
+  char* segmentNames[] = {"Inventory","History"};
+  screen2Segment = SimbleeForMobile.drawSegment(80,435,160,segmentNames,countof(segmentNames), WHITE);
 
   //BLUR SCREEN
   insertScreen1 = SimbleeForMobile.drawRect(0, 0, 320, 570, rgba(155, 155, 155, 50));
@@ -243,7 +240,7 @@ void inventoryScreen()
 
   SimbleeForMobile.endScreen();
 
-  SimbleeForMobile.updateValue(screen2Segment, 0);
+  SimbleeForMobile.updateValue(screen2Segment,0);
 }
 
 //************************************************************************************************
@@ -255,12 +252,12 @@ void addScreen()
 
   //BACKGROUND
   SimbleeForMobile.drawRect(0, 0, 320, 480, GE_RED);
-  SimbleeForMobile.drawImage(3, 0, 60);
-  SimbleeForMobile.drawImage(4, 0, 60);
-  SimbleeForMobile.drawImage(5, 0, 60);
-  SimbleeForMobile.drawImage(6, 0, 60);
+  SimbleeForMobile.drawImage(3,0,60);
+  SimbleeForMobile.drawImage(4,0,60);
+  SimbleeForMobile.drawImage(5,0,60);
+  SimbleeForMobile.drawImage(6,0,60);
   //SimbleeForMobile.drawImage(7,0,60);
-
+  
   //SimbleeForMobile.drawRect(0, 60, 320,  180, GE_LIGHTGRAY);
   SimbleeForMobile.drawRect(0, 240, 320, 180, WHITE);
 
@@ -323,9 +320,9 @@ void addScreen()
   else if (wineChosen == 3) {
     SimbleeForMobile.imageSource(6, JPG, LaTercera1_jpg, LaTercera1_jpg_len);
   }
-  //  else if (wineChosen == 4) {
-  //    //SimbleeForMobile.imageSource(7, JPG, Martini2_jpg, Martini2_jpg_len);
-  //  }
+//  else if (wineChosen == 4) {
+//    //SimbleeForMobile.imageSource(7, JPG, Martini2_jpg, Martini2_jpg_len);
+//  }
   else
     SimbleeForMobile.drawRect(0, 60, 320,  180, GE_LIGHTGRAY);
 }
@@ -333,7 +330,7 @@ void addScreen()
 
 //************************************************************************************************
 
-void historyScreen() {
+void historyScreen(){
   SimbleeForMobile.beginScreen(WHITE, PORTRAIT);
 
   //BACKGROUND
@@ -362,8 +359,8 @@ void historyScreen() {
   //SimbleeForMobile.drawImage(Martini1,10,354);
   SimbleeForMobile.drawRect(10, 354, 50, 60, BLACK);
 
-  SimbleeForMobile.imageSource(7, PNG, stars_png, stars_png_len);
-
+  SimbleeForMobile.imageSource(7,PNG, stars_png,stars_png_len);
+  
 
   //TITLE
   screen2Title = SimbleeForMobile.drawText(120, 25, "History", WHITE, 25);
@@ -372,7 +369,7 @@ void historyScreen() {
 
   int overlayY[5] = {61, 133, 205, 277, 349};
 
-
+  
 
   for (int i = 0; i < 5; i++) {
     //VINEYARD
@@ -386,15 +383,12 @@ void historyScreen() {
     //WHATWEDIDWITHTHEBOTTLE
     WWDWTB[i] = SimbleeForMobile.drawText(70, boxY[i] + 50 , "", GE_LIGHTGRAY, 10);
     //INVISBLE OVERLAY
-
-
-
-    starsRect[i] = SimbleeForMobile.drawRect(190, boxY[i], 1, 19, YELLOW);
+    OverlayUI[i] = SimbleeForMobile.drawRect(0, overlayY[i], 280, 80, rgba(0, 0, 0, 255));
+    SimbleeForMobile.setEvents(OverlayUI[i], EVENT_PRESS);
+    starsRect[i] = SimbleeForMobile.drawRect(190,boxY[i],80,19,YELLOW);
     SimbleeForMobile.setVisible(starsRect[i], false);
-    starsImg[i] = SimbleeForMobile.drawImage(7, 190, boxY[i]);
+    starsImg[i] = SimbleeForMobile.drawImage(7,190,boxY[i]);
     SimbleeForMobile.setVisible(starsImg[i], false);
-    HistoryOverlayUI[i] = SimbleeForMobile.drawRect(0, overlayY[i], 280, 80, rgba(0, 0, 0, 255));
-    SimbleeForMobile.setEvents(HistoryOverlayUI[i], EVENT_PRESS);
   }
 
   //PAGE SELECTION
@@ -406,8 +400,8 @@ void historyScreen() {
   screen6nextPage = SimbleeForMobile.drawButton(280, 380, 40, "", WHITE, 2);
   SimbleeForMobile.setEvents(screen6nextPage, EVENT_PRESS);
 
-  char* segmentNames[] = {"Inventory", "History"};
-  screen6Segment = SimbleeForMobile.drawSegment(80, 435, 160, segmentNames, countof(segmentNames), WHITE);
+  char* segmentNames[] = {"Inventory","History"};
+  screen6Segment = SimbleeForMobile.drawSegment(80,435,160,segmentNames,countof(segmentNames), WHITE);
 
   //BLUR SCREEN
   insertScreen1 = SimbleeForMobile.drawRect(0, 0, 320, 570, rgba(155, 155, 155, 50));
@@ -448,72 +442,6 @@ void historyScreen() {
   SimbleeForMobile.endScreen();
 
   SimbleeForMobile.updateValue(screen6Segment, 1);
-}
-
-void historydetailScreen() {
-  SimbleeForMobile.beginScreen();
-
-  //BACKGROUND
-  SimbleeForMobile.drawRect(0, 0, 320, 480, GE_RED);
-  SimbleeForMobile.drawImage(3, 0, 60);
-  SimbleeForMobile.drawImage(4, 0, 60);
-  SimbleeForMobile.drawImage(5, 0, 60);
-  SimbleeForMobile.drawImage(6, 0, 60);
-  //SimbleeForMobile.drawImage(7,0,60);
-  SimbleeForMobile.imageSource(7, PNG, stars_png, stars_png_len);
-
-  //SimbleeForMobile.drawRect(0, 60, 320,  180, GE_LIGHTGRAY);
-  SimbleeForMobile.drawRect(0, 240, 320, 180, WHITE);
-
-
-  HistoryVineyardUISingle = SimbleeForMobile.drawText(30, 245, "Cherry Blossom", GE_LIGHTGRAY, 16);
-  HistoryWineName1UISingle = SimbleeForMobile.drawText(30, 262, "Central Otago", BLACK, 18);
-  HistoryWineName2UISingle = SimbleeForMobile.drawText(30, 280, "2014", BLACK, 18);
-  HistoryCountryUISingle = SimbleeForMobile.drawText(30, 300, "Pinot Noir", GE_LIGHTGRAY, 16);
-  HistoryPriceUISingle = SimbleeForMobile.drawText(200, 300, "$20.00", GE_LIGHTGRAY, 16);
-  starsRectUISingle = SimbleeForMobile.drawRect(205, 245, 1, 19, YELLOW);
-  SimbleeForMobile.drawImage(7, 205, 245);
-
-  for (int i = 0; i < 5; i++) {
-    rate[i] = SimbleeForMobile.drawRect(205 + (i * 16), 245, 16, 19, rgba(0, 0, 0, 255));
-    SimbleeForMobile.setEvents(rate[i], EVENT_PRESS);
-  }
-
-  //  //LOCATION TITLE
-  //  SimbleeForMobile.drawText(250, 245, "LOCATION", GE_LIGHTGRAY, 12);
-  //  //LOCATION
-  //  LocationUISingle = SimbleeForMobile.drawText(262, 260, "", BLACK, 30);
-
-
-  //INFO
-  consumeButton = SimbleeForMobile.drawButton(30, 330, 120, "CONSUMED", GRAY, 2);
-  SimbleeForMobile.setEvents(consumeButton, EVENT_PRESS);
-  giftButton = SimbleeForMobile.drawButton(170, 330, 120, "GIFTED", GRAY, 2);
-  SimbleeForMobile.setEvents(giftButton, EVENT_PRESS);
-  deleteButton = SimbleeForMobile.drawButton(40, 375, 240, "DELETE FROM HISTORY", RED, 2);
-  SimbleeForMobile.setEvents(deleteButton, EVENT_PRESS);
-  returnButton = SimbleeForMobile.drawButton(40, 435, 240, "RETURN TO HISTORY", BLACK, 1);
-  SimbleeForMobile.setEvents(returnButton, EVENT_PRESS);
-
-  SimbleeForMobile.endScreen();
-  int wineChosen = clickedOverlay + ((winePage - 1) * 5);
-  if (wineChosen == 0) {
-    SimbleeForMobile.imageSource(3, JPG, ColumbiaCrest2_jpg, ColumbiaCrest2_jpg_len);
-  }
-  else if (wineChosen == 1) {
-    SimbleeForMobile.imageSource(4, JPG, Carmen1_jpg, Carmen1_jpg_len);
-  }
-  else if (wineChosen == 2) {
-    SimbleeForMobile.imageSource(5, JPG, CoppolaShiraz1_jpg, CoppolaShiraz1_jpg_len);
-  }
-  else if (wineChosen == 3) {
-    SimbleeForMobile.imageSource(6, JPG, LaTercera1_jpg, LaTercera1_jpg_len);
-  }
-  //  else if (wineChosen == 4) {
-  //    //SimbleeForMobile.imageSource(7, JPG, Martini2_jpg, Martini2_jpg_len);
-  //  }
-  else
-    SimbleeForMobile.drawRect(0, 60, 320,  180, GE_LIGHTGRAY);
 }
 
 void checkButtonState(Slot toButton, int cellID) {
@@ -617,11 +545,8 @@ void removeBottle()
   {
     checkAllButtons();
   }
-  if (wine[clickedOverlay + ((winePage - 1) * 5)].getIndex() != -1) {
-    History.push_back(wine[clickedOverlay + ((winePage - 1) * 5)]);
-  }
   wine[clickedOverlay + ((winePage - 1) * 5)].setIndex(-1);
-
+  History.push_back(wine[clickedOverlay + ((winePage - 1) * 5)]);
   SimbleeForMobile.setVisible(removeScreen4, false);
   SimbleeForMobile.setVisible(removeScreen1, false);
   SimbleeForMobile.setVisible(removeScreen2, false);
@@ -631,6 +556,8 @@ void removeBottle()
   delay(100);
   SimbleeForMobile.showScreen(2);
 }
+
+
 // Inializing vector of Slots for TESTBOX units.
 //   Should not have problems with corresponding
 //   switch and led positions.
@@ -678,7 +605,7 @@ void loop()
     if (SimbleeForMobile.screen == 2) {
       if (updatePage == true)
       {
-
+        
         SimbleeForMobile.updateValue(pageValue, winePage);
         if (addDetected >= 0) {
           FastLED.show();
@@ -708,10 +635,7 @@ void loop()
               bottle = i;
             }
           }
-          if (wine[bottle].getIndex() != -1) {
-            History.push_back(wine[bottle]);
-          }
-
+          History.push_back(wine[bottle]);
           leds[removeDetected] = color2;
           FastLED.show();
           SimbleeForMobile.updateText(removePopUpRackNumber, ChillerSlot[removeDetected]);
@@ -731,6 +655,7 @@ void loop()
           FastLED.show();
           removeDetected = -1;
         }
+
         for (int i = 0; i < 5; i++) {
           SimbleeForMobile.updateText(VineyardUI[i], wine[i + ((winePage - 1) * 5)].getVineyard());
           SimbleeForMobile.updateText(WineName1UI[i], wine[i + ((winePage - 1) * 5)].getName());
@@ -802,93 +727,20 @@ void loop()
         SimbleeForMobile.updateValue(screen6pageValue, historyPage);
         Serial.println(historyPage);
         int tempHistorysize = History.size();
-        Serial.println(History.size());
-        tempHistorysize -= ((historyPage - 1) * 5);
-        for (int i = 0; i < constrain(tempHistorysize, 0, 5); i++) {
-          Serial.println(History[i + ((historyPage - 1) * 5)].getName());
+        tempHistorysize -= ((historyPage-1) * 5);
+        for (int i = 0; i < constrain(tempHistorysize,0,5); i++) {
           SimbleeForMobile.updateText(HistoryVineyardUI[i], History[i + ((historyPage - 1) * 5)].getVineyard());
           SimbleeForMobile.updateText(HistoryWineName1UI[i], History[i + ((historyPage - 1) * 5)].getName());
           SimbleeForMobile.updateText(HistoryWineName2UI[i], History[i + ((historyPage - 1) * 5)].getYear());
           SimbleeForMobile.updateText(HistoryCountryUI[i], History[i + ((historyPage - 1) * 5)].getwineType());
-          
-          if (History[i + ((historyPage - 1) * 5)].getRating() == 1) {
-            SimbleeForMobile.updateW(starsRect[i], 16);
-          }
-          else if (History[i + ((historyPage - 1) * 5)].getRating() == 2) {
-            SimbleeForMobile.updateW(starsRect[i], 32);
-          }
-          else if (History[i + ((historyPage - 1) * 5)].getRating() == 3) {
-            SimbleeForMobile.updateW(starsRect[i], 48);
-          }
-          else if (History[i + ((historyPage - 1) * 5)].getRating() == 4) {
-            SimbleeForMobile.updateW(starsRect[i], 64);
-          }
-          else if (History[i + ((historyPage - 1) * 5)].getRating() == 5) {
-            SimbleeForMobile.updateW(starsRect[i], 80);
-          }
-          
-          SimbleeForMobile.setVisible(starsRect[i],true);
-          SimbleeForMobile.setVisible(starsImg[i], true);
-          
-          if (History[i + ((historyPage - 1) * 5)].getIndex() == -1) {
-            SimbleeForMobile.updateText(WWDWTB[i], "");
-          }
-          else if (History[i + ((historyPage - 1) * 5)].getIndex() == -2) {
-            SimbleeForMobile.updateText(WWDWTB[i], "GIFTED");
-          }
-          else if (History[i + ((historyPage - 1) * 5)].getIndex() == -3) {
-            SimbleeForMobile.updateText(WWDWTB[i], "CONSUMED");
-          }
-          SimbleeForMobile.setVisible(HistoryOverlayUI[i], true);
-
-          
         }
-        for (int i = 4; i >= constrain(tempHistorysize, 0, 5); i--) {
+        for (int i = 5; i >= constrain(tempHistorysize,0,5); i--) {
           SimbleeForMobile.updateText(HistoryVineyardUI[i], "");
-          SimbleeForMobile.updateText(HistoryWineName1UI[i], "");
+          SimbleeForMobile.updateText(HistoryWineName1UI[i],"");
           SimbleeForMobile.updateText(HistoryWineName2UI[i], "");
           SimbleeForMobile.updateText(HistoryCountryUI[i], "");
-          SimbleeForMobile.setVisible(starsRect[i],false);
-          SimbleeForMobile.setVisible(starsImg[i], false);
-          SimbleeForMobile.updateText(WWDWTB[i], "");
-          SimbleeForMobile.setVisible(HistoryOverlayUI[i], false);
         }
         updatePage = false;
-      }
-    }
-    else if (SimbleeForMobile.screen = 7) {
-      SimbleeForMobile.updateText(HistoryVineyardUISingle, History[clickedOverlay2 + ((historyPage - 1) * 5)].getVineyard());
-      SimbleeForMobile.updateText(HistoryWineName1UISingle, History[clickedOverlay2 + ((historyPage - 1) * 5)].getName());
-      SimbleeForMobile.updateText(HistoryWineName2UISingle, History[clickedOverlay2 + ((historyPage - 1) * 5)].getYear());
-      SimbleeForMobile.updateText(HistoryCountryUISingle, History[clickedOverlay2 + ((historyPage - 1) * 5)].getwineType());
-      SimbleeForMobile.updateText(HistoryPriceUISingle, History[clickedOverlay2 + ((historyPage - 1) * 5)].getPrice());
-
-      if (History[clickedOverlay2 + ((historyPage - 1) * 5)].getIndex() == -1) {
-        SimbleeForMobile.updateColor(consumeButton, GRAY);
-        SimbleeForMobile.updateColor(giftButton, GRAY);
-      }
-      else if (History[clickedOverlay2 + ((historyPage - 1) * 5)].getIndex() == -2) {
-        SimbleeForMobile.updateColor(consumeButton, GRAY);
-        SimbleeForMobile.updateColor(giftButton, GREEN);
-      }
-      else if (History[clickedOverlay2 + ((historyPage - 1) * 5)].getIndex() == -3) {
-        SimbleeForMobile.updateColor(consumeButton, GREEN);
-        SimbleeForMobile.updateColor(giftButton, GRAY);
-      }
-      if (History[clickedOverlay2 + ((historyPage - 1) * 5)].getRating() == 1) {
-        SimbleeForMobile.updateW(starsRectUISingle, 16);
-      }
-      else if (History[clickedOverlay2 + ((historyPage - 1) * 5)].getRating() == 2) {
-        SimbleeForMobile.updateW(starsRectUISingle, 32);
-      }
-      else if (History[clickedOverlay2 + ((historyPage - 1) * 5)].getRating() == 3) {
-        SimbleeForMobile.updateW(starsRectUISingle, 48);
-      }
-      else if (History[clickedOverlay2 + ((historyPage - 1) * 5)].getRating() == 4) {
-        SimbleeForMobile.updateW(starsRectUISingle, 64);
-      }
-      else if (History[clickedOverlay2 + ((historyPage - 1) * 5)].getRating() == 5) {
-        SimbleeForMobile.updateW(starsRectUISingle, 80);
       }
     }
   }
@@ -992,12 +844,12 @@ void ui_event(event_t &event)
         updatePage = true;
       }
     }
-    else if (event.id == screen2Segment) {
-      if (event.value == 0) {
+    else if (event.id == screen2Segment){
+      if(event.value == 0){
         updatePage = true;
         SimbleeForMobile.showScreen(2);
       }
-      else if (event.value == 1) {
+      else if(event.value == 1){
         updatePage = true;
         SimbleeForMobile.showScreen(6);
       }
@@ -1019,9 +871,7 @@ void ui_event(event_t &event)
       updatePage = true;
     }
   }
-
-
-  else if (SimbleeForMobile.screen == 6) {
+  else if (SimbleeForMobile.screen == 6){
     if (event.id == screen6nextPage)
     {
       updatePage = true;
@@ -1039,86 +889,17 @@ void ui_event(event_t &event)
         historyPage = 5;
       }
     }
-    else if (event.id == screen6Segment) {
-      if (event.value == 0) {
+    else if (event.id == screen6Segment){
+      if(event.value == 0){
         updatePage = true;
         SimbleeForMobile.showScreen(2);
       }
-      else if (event.value == 1) {
+      else if(event.value == 1){
         updatePage = true;
         SimbleeForMobile.showScreen(6);
       }
     }
-    else if (event.id == HistoryOverlayUI[0]) {
-      clickedOverlay2 = 0;
-      updatePage = true;
-      SimbleeForMobile.showScreen(7);
-    }
-
-    else if (event.id == HistoryOverlayUI[1]) {
-      clickedOverlay2 = 1;
-      updatePage = true;
-      SimbleeForMobile.showScreen(7);
-    }
-    else if (event.id == HistoryOverlayUI[2]) {
-      clickedOverlay2 = 2;
-      updatePage = true;
-      SimbleeForMobile.showScreen(7);
-    }
-    else if (event.id == HistoryOverlayUI[3]) {
-      clickedOverlay2 = 3;
-      updatePage = true;
-      SimbleeForMobile.showScreen(7);
-    }
-    else if (event.id == HistoryOverlayUI[4]) {
-      clickedOverlay2 = 4;
-      updatePage = true;
-      SimbleeForMobile.showScreen(7);
-    }
   }
-  else if (SimbleeForMobile.screen == 7) {
-    if (event.id == returnButton) {
-      updatePage = true;
-      SimbleeForMobile.showScreen(6);
-    }
-    else if (event.id == consumeButton) {
-      History[clickedOverlay2 + ((historyPage - 1) * 5)].setIndex(-3);
-      updatePage = true;
-    }
-    else if (event.id == giftButton) {
-      History[clickedOverlay2 + ((historyPage - 1) * 5)].setIndex(-2);
-      updatePage = true;
-    }
-    else if (event.id == deleteButton) {
-      History[clickedOverlay2 + ((historyPage - 1) * 5)].setIndex(-1);
-      History.erase(History.begin() + (clickedOverlay2 + ((historyPage - 1) * 5)));
-      updatePage = true;
-      SimbleeForMobile.showScreen(6);
-    }
-    else if (event.id == rate[0]) {
-      SimbleeForMobile.updateW(starsRectUISingle, 16);
-      History[clickedOverlay2 + ((historyPage - 1) * 5)].setRating(1);
-    }
-    else if (event.id == rate[1]) {
-      SimbleeForMobile.updateW(starsRectUISingle, 16 * 2);
-      History[clickedOverlay2 + ((historyPage - 1) * 5)].setRating(2);
-    }
-    else if (event.id == rate[2]) {
-      SimbleeForMobile.updateW(starsRectUISingle, 16 * 3);
-      History[clickedOverlay2 + ((historyPage - 1) * 5)].setRating(3);
-    }
-    else if (event.id == rate[3]) {
-      SimbleeForMobile.updateW(starsRectUISingle, 16 * 4);
-      History[clickedOverlay2 + ((historyPage - 1) * 5)].setRating(4);
-    }
-    else if (event.id == rate[4]) {
-      SimbleeForMobile.updateW(starsRectUISingle, 16 * 5);
-      History[clickedOverlay2 + ((historyPage - 1) * 5)].setRating(5);
-    }
-    updatePage = true;
-
-  }
-
 }
 
 void ui()
@@ -1149,10 +930,6 @@ void ui()
       historyScreen();
       break;
 
-    case 7:
-      historydetailScreen();
-      break;
-
     default:
       splashScreen();
       break;
@@ -1161,5 +938,4 @@ void ui()
 
 void SimbleeForMobile_onDisconnect() {
   disconnected = true;
-  updatePage = true;
 }

@@ -15,14 +15,13 @@ private:
     //-1 = in possesion
     //0 to 24 = in chiller
     int index;
-    int8_t rating;
+    int8_t image;
     
 public:
     Wine();
-    Wine( char*  input_name, char* input_vineyard, char*  input_wineYear, char*  input_wineType, char*  input_price, int input_index, int8_t input_rating);
+    Wine( char*  input_name, char* input_vineyard, char*  input_wineYear, char*  input_wineType, char*  input_price, int input_index, int8_t input_image);
     
     void setIndex(int assignedSlotIndex);
-    void setRating(int assignedRating);
     
     char*  getName();
     char* getVineyard();
@@ -30,7 +29,7 @@ public:
     char*  getwineType();
     char*  getPrice();
     int getIndex();
-    int8_t getRating();
+    int8_t getImage();
 };
 
 #endif
