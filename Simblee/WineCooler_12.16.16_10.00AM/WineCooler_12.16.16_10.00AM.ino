@@ -86,7 +86,8 @@ uint8_t previousPage, nextPage, pageValue,
         HistoryVineyardUI[5], HistoryWineName1UI[5], HistoryWineName2UI[5], HistoryCountryUI[5], HistoryOverlayUI[5],
         consumeButton, giftButton, deleteButton, clickedOverlay2,
         HistoryVineyardUISingle, HistoryWineName1UISingle, HistoryWineName2UISingle, HistoryCountryUISingle, HistoryPriceUISingle, starsRectUISingle,
-        rate[5];
+        rate[5],
+        toCameraButton;
 
 int8_t winePage = 1,
        historyPage = 1,
@@ -208,6 +209,8 @@ void inventoryScreen() {
     OverlayUI[i] = SimbleeForMobile.drawRect(0, overlayY[i], 280, 80, rgba(0, 0, 0, 255));
     SimbleeForMobile.setEvents(OverlayUI[i], EVENT_PRESS);
   }
+  toCameraButton = SimbleeForMobile.drawButton(260, 435, 60, "CAMERA");
+  SimbleeForMobile.setEvents(toCameraButton, EVENT_PRESS);
 
   //PAGE SELECTION
   pageValue = SimbleeForMobile.drawText(295, 230, 1, WHITE, 20);
@@ -220,6 +223,8 @@ void inventoryScreen() {
 
   char* segmentNames[] = {"Inventory", "History"};
   screen2Segment = SimbleeForMobile.drawSegment(80, 435, 160, segmentNames, countof(segmentNames), WHITE);
+
+
 
   //BLUR SCREEN
   insertScreen1 = SimbleeForMobile.drawRect(0, 0, 320, 570, rgba(155, 155, 155, 50));
@@ -262,7 +267,17 @@ void inventoryScreen() {
   SimbleeForMobile.updateValue(screen2Segment, 0);
 }
 
-//************************************************************************************************
+
+
+void camScreen() {
+  SimbleeForMobile.beginScreen(WHITE, PORTRAIT);
+  SimbleeForMobile.drawRect(0, 0, 320, 570, GE_RED);
+  SimbleeForMobile.drawText(20, 200, "LOADING", WHITE, 50);
+  SimbleeForMobile.drawText(20, 250, "INTERFACE", WHITE, 50);
+  SimbleeForMobile.imageSource(1, JPG, WineSplashScreen_jpg, WineSplashScreen_jpg_len);
+  SimbleeForMobile.drawImage(1, 0, 0);
+  SimbleeForMobile.endScreen();
+}
 
 //SCREEN 5 BASE*********************************************************************************
 void addScreen() {
@@ -775,7 +790,7 @@ void SimbleeForMobile_onDisconnect() {
 }
 
 void setup() {
-  //  Serial.begin(9600);
+  Serial.begin(9600);
   //initializePins();
   initializePinsTestBox();
   //comment out if not using testbox
@@ -786,7 +801,7 @@ void setup() {
   FastLED.show();
   SimbleeForMobile.deviceName = "Wine";
   SimbleeForMobile.advertisementData = "HistoryFeature";
-  SimbleeForMobile.domain = "FirstBuild4.simblee.com";
+  SimbleeForMobile.domain = "FirstBuild5.simblee.com";
   SimbleeForMobile.begin();
 }
 
@@ -1030,15 +1045,20 @@ void loop() {
         SimbleeForMobile.updateW(starsRectUISingle, 80);
       }
     }
+    else if (SimbleeForMobile.screen == 3) {
+
+    }
   }
   SimbleeForMobile.process();
 }
 
 void ui_event(event_t &event) {
-  //Serial.print("event.id = ");
-  //Serial.println(event.id);
-  //Serial.print("event.value = ");
-  //Serial.println(event.value);
+  Serial.print("screen = ");
+  Serial.println(SimbleeForMobile.screen);
+  Serial.print("event.id = ");
+  Serial.println(event.id);
+  Serial.print("event.value = ");
+  Serial.println(event.value);
   //SCREEN 2 EVENTS
   if (SimbleeForMobile.screen == 2)
   {
@@ -1139,6 +1159,9 @@ void ui_event(event_t &event) {
         updatePage = true;
         SimbleeForMobile.showScreen(6);
       }
+    }
+    else if (event.id == toCameraButton) {
+      SimbleeForMobile.showScreen(3);
     }
   }
   //SCREEN 5 EVENTS
@@ -1256,6 +1279,9 @@ void ui_event(event_t &event) {
     updatePage = true;
 
   }
+  else if (SimbleeForMobile.screen == 3) {
+
+  }
 
 }
 
@@ -1270,9 +1296,11 @@ void ui() {
 
     case 2:
       inventoryScreen();
+      SimbleeForMobile.showScreen(3);
       break;
 
     case 3:
+      camScreen();
       break;
 
     case 4:
@@ -1288,6 +1316,10 @@ void ui() {
 
     case 7:
       historydetailScreen();
+      break;
+
+    case 8:
+
       break;
 
     default:

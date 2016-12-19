@@ -575,7 +575,7 @@ void cameraScreen() {
   //WINE
   SimbleeForMobile.imageSource(28, JPG, winePhoto_jpg, winePhoto_jpg_len);
   wineLabel = SimbleeForMobile.drawImage(28, 30, 90);
-  SimbleeForMobile.setVisible(wineLabel, false);   
+  SimbleeForMobile.setVisible(wineLabel, false);
 
   //Label
   cameratext1 = SimbleeForMobile.drawText(118, 190, "POSITION THE", WHITE, 14);

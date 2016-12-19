@@ -119,9 +119,9 @@ Wine wine[25] = {Wine("Grand Estates", "Columbia Crest",  "2003", "Cabernet Sauv
                  Wine("Prieure de Cenac", "Chateau Saint-Didier-Parnac", "2014", "Malbec", "$7.98", -1, 0),
                  Wine("Reserva", "Perez Cruz", "2013", "Cabernet Sauvignon", "$14.46", -1, 0),
                  Wine("Proximo Roja", "Marquest De Riscal", "2010", "Spanish Red", "$9.48", -1, 0),
-                 Wine("J. Lohr", "Seven Oaks", "2014", "Cabernet Sauvignon", "$14.99", -1, 0),
-                 Wine("Alma de Los Andes", "Reserva Malebec", "2012", "Malbec", "$17.06", -1, 0),
-                 Wine("Rapel Valley", "Dallas Conte", "2001", "Merlot", "$10.00",-1,0),
+                 Wine(),
+                 Wine(),
+                 Wine(),
                  Wine(),
                  Wine(),
                  Wine(),
@@ -225,7 +225,7 @@ void inventoryScreen() {
   char* segmentNames[] = {"Inventory", "History"};
   screen2Segment = SimbleeForMobile.drawSegment(80, 435, 160, segmentNames, countof(segmentNames), WHITE);
 
-  toCameraScreenButton = SimbleeForMobile.drawButton(230, 435, 100, "ADD", WHITE, 1);
+  toCameraScreenButton = SimbleeForMobile.drawButton(230, 435, 100, "CAMERA", WHITE, 1);
   SimbleeForMobile.setEvents(toCameraScreenButton, EVENT_PRESS);
 
   //BLUR SCREEN
@@ -575,7 +575,7 @@ void cameraScreen() {
   //WINE
   SimbleeForMobile.imageSource(28, JPG, winePhoto_jpg, winePhoto_jpg_len);
   wineLabel = SimbleeForMobile.drawImage(28, 30, 90);
-  SimbleeForMobile.setVisible(wineLabel, false);   
+  SimbleeForMobile.setVisible(wineLabel, false);
 
   //Label
   cameratext1 = SimbleeForMobile.drawText(118, 190, "POSITION THE", WHITE, 14);
@@ -593,8 +593,7 @@ void cameraScreen() {
 
 
   addScreen1 = SimbleeForMobile.drawRect(0, 0, 320, 480, GE_RED);
-  SimbleeForMobile.setVisible(addScreen1, false);
-  SimbleeForMobile.imageSource(8, JPG, CoppolaCab2_jpg, CoppolaCab2_jpg_len);
+  addScreen2 = SimbleeForMobile.imageSource(8, JPG, CoppolaCab2_jpg, CoppolaCab2_jpg_len);
   addScreen3 = SimbleeForMobile.drawImage(8, 0, 60);
   addScreen4 = SimbleeForMobile.drawRect(0, 240, 320, 180, WHITE);
   addScreen5 = SimbleeForMobile.drawText(30, 245, "Diamond Collection Ivory", GE_LIGHTGRAY, 16);
@@ -604,8 +603,8 @@ void cameraScreen() {
   addScreen9 = SimbleeForMobile.drawText(200, 300, "$14.98", GE_LIGHTGRAY, 16);
   addScreen10 = SimbleeForMobile.drawButton(80, 380, 160, "ADD TO INVENTORY", BLACK, 1);
   addScreen11 =  SimbleeForMobile.drawText(80, 385, "ADDED TO INVENTORY", GREEN);
-  
-  
+  SimbleeForMobile.setVisible(addScreen1, false);
+  SimbleeForMobile.setVisible(addScreen2, false);
   SimbleeForMobile.setVisible(addScreen3, false);
   SimbleeForMobile.setVisible(addScreen4, false);
   SimbleeForMobile.setVisible(addScreen5, false);
